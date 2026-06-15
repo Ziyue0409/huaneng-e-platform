@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>售电小约 | 售电与绿证服务平台</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="售电小约首页">
+        <span class="brand-mark">E</span>
+        <span>售电小约</span>
+      </a>
+      <nav class="nav-links" aria-label="主导航">
+        <a href="#plans">套餐</a>
+        <a href="#demand">发布需求</a>
+        <a href="#supplier">商家入驻</a>
+        <a href="#console">后台原型</a>
+      </nav>
+      <a class="nav-action" href="#demand">获取方案</a>
+    </header>
+
+    <main id="home">
+      <section class="hero" aria-labelledby="hero-title">
+        <img src="assets/energy-hero.png" alt="现代工业园区、电网和光伏能源场景" />
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <p class="eyebrow">工商业售电 · 绿证绿电 · 跨省跨区 · 碳服务</p>
+          <h1 id="hero-title">华能新能源综能能源服务平台</h1>
+          <p class="hero-copy">
+            先选择售电、绿证绿电、跨省跨区或碳服务，再按业务需要选择北京、河北南网、蒙西、广东区域，并沉淀可跟进线索。
+          </p>
+
+          <div class="selector-panel" aria-label="快速筛选">
+            <div>
+              <span class="control-label">1. 选择业务</span>
+              <div class="segmented" id="businessTabs"></div>
+            </div>
+            <div>
+              <span class="control-label">2. 选择区域</span>
+              <div class="segmented" id="regionTabs"></div>
+              <span class="hero-hint" id="heroRegionHint"></span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-btn" href="#plans">查看套餐</a>
+              <a class="secondary-btn" href="#demand">发布需求</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="quick-strip" aria-label="平台能力">
+        <div>
+          <strong>4</strong>
+          <span>首批区域</span>
+        </div>
+        <div>
+          <strong>16+</strong>
+          <span>模拟套餐</span>
+        </div>
+        <div>
+          <strong>统一</strong>
+          <span>绿证交易服务包</span>
+        </div>
+        <div>
+          <strong>可扩展</strong>
+          <span>后续接后端接口</span>
+        </div>
+      </section>
+
+      <section class="section" id="plans">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">套餐中心</p>
+            <h2>先选业务，再按区域展示服务</h2>
+          </div>
+          <p>
+            套餐以业务类型为第一筛选，再结合各区域常见制式合同选项展示，包括固定价格、市场联动、偏差共担和分时优化等模式。最终价格、周期和条款以交易中心规则及服务商合同为准。
+          </p>
+        </div>
+        <div class="toolbar">
+          <label>
+            业务
+            <select id="businessSelect"></select>
+          </label>
+          <label id="regionFilterLabel">
+            区域
+            <select id="regionSelect"></select>
+            <span class="field-hint" id="regionHint"></span>
+          </label>
+          <label>
+            用电规模
+            <select id="scaleSelect">
+              <option value="all">全部规模</option>
+              <option value="small">月用电量 10-50 万度</option>
+              <option value="medium">月用电量 50-300 万度</option>
+              <option value="large">月用电量 300 万度以上</option>
+            </select>
+          </label>
+        </div>
+        <div class="plan-grid" id="planGrid"></div>
+      </section>
+
+      <section class="section split-section" id="green">
+        <div class="content-block">
+          <p class="eyebrow">绿证交易报价专区</p>
+          <h2>双非、通道和分布式光伏绿证</h2>
+          <p>
+            针对需要绿色电力消费声明、ESG 披露、出口供应链证明或品牌低碳沟通的企业，先展示双非绿证、通道绿证和分布式光伏绿证的意向价格，客户感兴趣后再进入人工对接。
+          </p>
+          <ul class="check-list">
+            <li>双非绿证（2025）7 元/张，双非绿证（2026）9 元/张</li>
+            <li>通道绿证 4.5 元/张，分布式光伏绿证 3.5 元/张</li>
+            <li>前端先展示意向报价，后续由平台或合作服务商确认资源</li>
+          </ul>
+          <a class="primary-btn compact" href="#demand">提交绿证需求</a>
+        </div>
+        <div class="info-grid" aria-label="绿证服务流程">
+          <div>
+            <span>01</span>
+            <strong>需求确认</strong>
+            <p>确认企业用电量、声明口径、预算与时间要求。</p>
+          </div>
+          <div>
+            <span>02</span>
+            <strong>资源询价</strong>
+            <p>按项目类型、年份和采购数量匹配绿证资源。</p>
+          </div>
+          <div>
+            <span>03</span>
+            <strong>材料交付</strong>
+            <p>协助整理采购凭证、消费声明和归档材料。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section form-band" id="demand">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">买方入口</p>
+            <h2>发布购电、绿电或碳服务需求</h2>
+          </div>
+          <p>表单当前为前端模拟提交，会实时进入下方后台原型列表，便于演示完整获客流程。</p>
+        </div>
+        <form class="form-grid" id="demandForm">
+          <label>
+            企业名称
+            <input name="company" required placeholder="例如：北京某制造有限公司" />
+          </label>
+          <label>
+            需求类型
+            <select name="business" required></select>
+          </label>
+          <label>
+            所在区域
+            <select name="region" required></select>
+          </label>
+          <label>
+            月用电量
+            <select name="volume" required>
+              <option>10-50 万度</option>
+              <option>50-300 万度</option>
+              <option>300 万度以上</option>
+              <option>仅采购绿证</option>
+            </select>
+          </label>
+          <label>
+            联系人
+            <input name="contact" required placeholder="姓名" />
+          </label>
+          <label>
+            手机或微信
+            <input name="phone" required placeholder="联系方式" />
+          </label>
+          <label class="wide">
+            需求说明
+            <textarea name="note" rows="4" placeholder="例如：希望比较固定价和联动价方案，是否可包含绿证。"></textarea>
+          </label>
+          <button class="primary-btn form-submit" type="submit">提交需求</button>
+        </form>
+      </section>
+
+      <section class="section form-band supplier-band" id="supplier">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">供给侧入口</p>
+            <h2>售电商与服务商入驻</h2>
+          </div>
+          <p>适合售电公司、绿证服务商、跨省跨区资源方和碳服务机构提交合作信息。</p>
+        </div>
+        <form class="form-grid" id="supplierForm">
+          <label>
+            公司名称
+            <input name="supplier" required placeholder="例如：某某售电有限公司" />
+          </label>
+          <label>
+            服务类型
+            <select name="business" required></select>
+          </label>
+          <label>
+            服务区域
+            <select name="region" required></select>
+          </label>
+          <label>
+            资质状态
+            <select name="status" required>
+              <option>已完成市场注册</option>
+              <option>资质待平台审核</option>
+              <option>仅提供咨询服务</option>
+            </select>
+          </label>
+          <label>
+            联系人
+            <input name="contact" required placeholder="姓名" />
+          </label>
+          <label>
+            联系方式
+            <input name="phone" required placeholder="手机或微信" />
+          </label>
+          <label class="wide">
+            服务说明
+            <textarea name="note" rows="4" placeholder="请说明可服务区域、套餐类型、资源优势。"></textarea>
+          </label>
+          <button class="primary-btn form-submit" type="submit">提交入驻</button>
+        </form>
+      </section>
+
+      <section class="section console" id="console">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">运营后台原型</p>
+            <h2>线索、商家和套餐管理视图</h2>
+          </div>
+          <p>后端接入前，先用前端状态模拟运营台账，帮助确认下一步数据库和接口字段。</p>
+        </div>
+        <div class="console-grid">
+          <article class="metric-card">
+            <span>今日新增需求</span>
+            <strong id="demandCount">3</strong>
+          </article>
+          <article class="metric-card">
+            <span>待审核商家</span>
+            <strong id="supplierCount">2</strong>
+          </article>
+          <article class="metric-card">
+            <span>可展示套餐</span>
+            <strong id="planCount">0</strong>
+          </article>
+        </div>
+        <div class="table-wrap">
+          <div class="table-title">需求线索</div>
+          <table>
+            <thead>
+              <tr>
+                <th>企业</th>
+                <th>区域</th>
+                <th>类型</th>
+                <th>用电量</th>
+                <th>状态</th>
+              </tr>
+            </thead>
+            <tbody id="leadTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
