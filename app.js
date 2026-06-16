@@ -369,6 +369,7 @@ const plans = [
 
 let selectedRegion = "beijing";
 let selectedBusiness = "retail";
+let activePlanId = null;
 
 const leads = [
   { company: "北京某精密制造公司", region: "北京", business: "售电套餐", volume: "50-300 万度", status: "待分配" },
@@ -456,6 +457,64 @@ function tagClass(plan) {
   return "";
 }
 
+function getServiceTerm(plan) {
+  if (plan.mode.includes("月度")) return "月度签约";
+  if (plan.mode.includes("年度")) return "年度签约";
+  if (plan.mode.includes("中长期")) return "年度或多月签约";
+  if (plan.business === "green") return "按采购批次确认";
+  return "按客户需求和合同约定确认";
+}
+
+function getPlanDetails(plan) {
+  if (plan.id === "hbn-month") {
+    return [
+      ["价格构成", "河北南网全网中长期直接交易合同加权平均价"],
+      ["服务费", "0元固定服务费"],
+      ["偏差考核", "供方承担100%偏差考核"],
+      ["服务期限", "月度签约"],
+      ["增值服务", "用电咨询、能耗分析"]
+    ];
+  }
+
+  if (plan.business === "green") {
+    return [
+      ["价格构成", `${plan.name}，全国统一意向价 ${plan.price || "询价后确认"}`],
+      ["服务费", "按采购数量和资源方交付要求确认"],
+      ["交付口径", "按项目类型、年份、采购数量和资源库存确认"],
+      ["服务期限", "按采购批次确认"],
+      ["增值服务", "绿证询价、资源匹配、材料整理、核销协助"]
+    ];
+  }
+
+  if (plan.business === "cross") {
+    return [
+      ["价格构成", "按跨省跨区资源、交易路径和客户准入条件综合确认"],
+      ["服务费", "按资源匹配难度和服务范围确认"],
+      ["偏差考核", "按交易规则及双方合同约定执行"],
+      ["服务期限", "按项目周期或交易周期确认"],
+      ["增值服务", "资源撮合、交易路径咨询、绿电消纳建议"]
+    ];
+  }
+
+  if (plan.business === "carbon") {
+    return [
+      ["价格构成", "按碳盘查、碳资产咨询或履约服务范围报价"],
+      ["服务费", "按服务事项和交付材料确认"],
+      ["履约口径", "按企业行业、排放边界和监管要求确认"],
+      ["服务期限", "按项目周期确认"],
+      ["增值服务", "碳盘查、履约咨询、CCER线索梳理、低碳披露支持"]
+    ];
+  }
+
+  return [
+    ["价格构成", `${getRegionName(plan.region)}市场化交易价格或合同约定价格，当前意向报价为 ${plan.price || "询价后确认"}`],
+    ["服务费", plan.price?.includes("服务费") ? plan.price.replace(/^.*\+\s*/, "") : "按最终报价和服务协议确认"],
+    ["偏差考核", "按交易规则及双方合同约定执行，可在对接时确认承担方式"],
+    ["服务期限", getServiceTerm(plan)],
+    ["增值服务", "用电咨询、能耗分析、报价比选、合同条款提示"]
+  ];
+}
+
 function renderPlans() {
   const grid = document.getElementById("planGrid");
   const visiblePlans = plans.filter(planMatches);
@@ -481,7 +540,10 @@ function renderPlans() {
               </ul>
               <div class="card-foot">
                 <span>${plan.mode} · ${plan.supplier}</span>
-                <button class="text-btn" type="button" data-plan="${plan.name}">咨询</button>
+                <div class="card-actions">
+                  <button class="text-btn" type="button" data-plan-detail="${plan.id}">查看详情</button>
+                  <button class="text-btn" type="button" data-plan="${plan.name}">咨询</button>
+                </div>
               </div>
             </article>
           `
@@ -500,7 +562,43 @@ function renderPlans() {
     });
   });
 
+  document.querySelectorAll("[data-plan-detail]").forEach((button) => {
+    button.addEventListener("click", () => {
+      openPlanModal(button.dataset.planDetail);
+    });
+  });
+
   document.getElementById("planCount").textContent = plans.length;
+}
+
+function openPlanModal(planId) {
+  const plan = plans.find((item) => item.id === planId);
+  if (!plan) return;
+
+  activePlanId = plan.id;
+  document.getElementById("planModalTitle").textContent = plan.name;
+  document.getElementById("planModalEyebrow").textContent = `${getPlanRegionLabel(plan)} · ${plan.mode}`;
+  document.getElementById("planModalSummary").textContent = plan.desc;
+  document.getElementById("planModalDetails").innerHTML = getPlanDetails(plan)
+    .map(
+      ([label, value]) => `
+        <div>
+          <dt>${label}</dt>
+          <dd>${value}</dd>
+        </div>
+      `
+    )
+    .join("");
+
+  const modal = document.getElementById("planModal");
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function closePlanModal() {
+  const modal = document.getElementById("planModal");
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
 }
 
 function renderContactCard() {
@@ -629,6 +727,31 @@ function setupEvents() {
   });
 
   document.getElementById("scaleSelect").addEventListener("change", renderPlans);
+
+  document.querySelectorAll("[data-modal-close]").forEach((button) => {
+    button.addEventListener("click", closePlanModal);
+  });
+
+  document.getElementById("modalConsultBtn").addEventListener("click", () => {
+    const plan = plans.find((item) => item.id === activePlanId);
+    if (!plan) return;
+
+    selectedBusiness = plan.business;
+    if (plan.region !== "all") selectedRegion = plan.region;
+    populateFormSelects();
+
+    const form = document.getElementById("demandForm");
+    form.querySelector('[name="business"]').value = plan.business;
+    form.querySelector('[name="region"]').value = plan.business === "green" ? regions[0].id : selectedRegion;
+    form.querySelector('[name="note"]').value = `我想咨询「${plan.name}」，请联系我提供报价方案。`;
+    closePlanModal();
+    document.getElementById("demand").scrollIntoView({ behavior: "smooth" });
+    showToast("已把套餐名称带入需求表单。");
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closePlanModal();
+  });
 
   document.getElementById("leadTable").addEventListener("click", (event) => {
     const button = event.target.closest("[data-lead-action]");

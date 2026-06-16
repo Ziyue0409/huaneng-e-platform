@@ -537,6 +537,13 @@ textarea:focus {
   border-top: 1px solid var(--line);
 }
 
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 .card-foot span {
   color: var(--muted);
   font-size: 13px;
@@ -546,6 +553,105 @@ textarea:focus {
   border: 0;
   background: transparent;
   color: var(--green);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal.is-open {
+  display: flex;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 28, 26, 0.56);
+}
+
+.modal-panel {
+  position: relative;
+  z-index: 1;
+  width: min(720px, 100%);
+  max-height: min(760px, calc(100vh - 48px));
+  overflow-y: auto;
+  padding: 30px;
+  background: var(--white);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.modal-summary {
+  color: var(--muted);
+}
+
+.detail-list {
+  display: grid;
+  gap: 12px;
+  margin: 22px 0;
+}
+
+.detail-list div {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 14px;
+  padding: 14px;
+  background: #f6f8f6;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.detail-list dt {
+  color: var(--green-dark);
+  font-weight: 900;
+}
+
+.detail-list dd {
+  margin: 0;
+  color: #344649;
+}
+
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.secondary-line-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid #c8d6d3;
+  border-radius: 8px;
+  background: var(--white);
+  color: #334447;
   cursor: pointer;
   font-weight: 800;
 }
@@ -865,5 +971,28 @@ td {
 
   .plan-card {
     min-height: auto;
+  }
+
+  .card-foot,
+  .modal-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .card-actions {
+    justify-content: flex-start;
+  }
+
+  .modal {
+    padding: 16px;
+  }
+
+  .modal-panel {
+    padding: 24px 18px;
+  }
+
+  .detail-list div {
+    grid-template-columns: 1fr;
+    gap: 6px;
   }
 }

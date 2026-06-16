@@ -268,6 +268,21 @@
       </section>
     </main>
 
+    <div class="modal" id="planModal" aria-hidden="true">
+      <div class="modal-backdrop" data-modal-close></div>
+      <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="planModalTitle">
+        <button class="modal-close" type="button" data-modal-close aria-label="关闭套餐详情">×</button>
+        <p class="eyebrow" id="planModalEyebrow">套餐详情</p>
+        <h2 id="planModalTitle"></h2>
+        <p class="modal-summary" id="planModalSummary"></p>
+        <dl class="detail-list" id="planModalDetails"></dl>
+        <div class="modal-actions">
+          <button class="primary-btn" type="button" id="modalConsultBtn">咨询该套餐</button>
+          <button class="secondary-line-btn" type="button" data-modal-close>返回列表</button>
+        </div>
+      </section>
+    </div>
+
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="app.js"></script>
   </body>
