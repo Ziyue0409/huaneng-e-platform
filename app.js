@@ -381,6 +381,23 @@ const suppliers = [
   { name: "绿证服务机构", region: "北京", business: "绿证绿电" }
 ];
 
+const regionContacts = {
+  beijing: { title: "北京负责人", name: "张三", phone: "13800000001", wechat: "zhangsan-energy" },
+  hebei_south: { title: "河北南网负责人", name: "李四", phone: "13800000002", wechat: "lisi-power" },
+  mengxi: { title: "蒙西负责人", name: "王五", phone: "13800000003", wechat: "wangwu-mx" },
+  guangdong: { title: "广东负责人", name: "赵六", phone: "13800000004", wechat: "zhaoliu-gd" },
+  yunnan: { title: "云南负责人", name: "xxx", phone: "xxx", wechat: "xxx" },
+  liaoning: { title: "辽宁负责人", name: "xxx", phone: "xxx", wechat: "xxx" },
+  shaanxi: { title: "陕西负责人", name: "xxx", phone: "xxx", wechat: "xxx" }
+};
+
+const greenContact = {
+  title: "绿证负责人",
+  name: "xxx",
+  phone: "xxx",
+  wechat: "xxx"
+};
+
 function getRegionName(id) {
   if (id === "all") return "全国统一";
   return regions.find((region) => region.id === id)?.name || id;
@@ -442,6 +459,7 @@ function tagClass(plan) {
 function renderPlans() {
   const grid = document.getElementById("planGrid");
   const visiblePlans = plans.filter(planMatches);
+  renderContactCard();
 
   grid.innerHTML = visiblePlans.length
     ? visiblePlans
@@ -483,6 +501,34 @@ function renderPlans() {
   });
 
   document.getElementById("planCount").textContent = plans.length;
+}
+
+function renderContactCard() {
+  const contact = selectedBusiness === "green" ? greenContact : regionContacts[selectedRegion];
+  const scope = selectedBusiness === "green" ? "全国统一绿证业务" : `${getRegionName(selectedRegion)}区域业务`;
+  const phoneValue = contact.phone === "xxx" ? contact.phone : `<a href="tel:${contact.phone}">${contact.phone}</a>`;
+
+  document.getElementById("contactCard").innerHTML = `
+    <div>
+      <p class="eyebrow">对接联系人</p>
+      <h3>${contact.title}</h3>
+      <span>${scope}</span>
+    </div>
+    <dl>
+      <div>
+        <dt>姓名</dt>
+        <dd>${contact.name}</dd>
+      </div>
+      <div>
+        <dt>电话</dt>
+        <dd>${phoneValue}</dd>
+      </div>
+      <div>
+        <dt>微信</dt>
+        <dd>${contact.wechat}</dd>
+      </div>
+    </dl>
+  `;
 }
 
 function syncControls() {
