@@ -671,6 +671,41 @@ td {
   font-weight: 800;
 }
 
+.table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mini-btn {
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid #c8d6d3;
+  border-radius: 7px;
+  background: var(--white);
+  color: #334447;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.mini-btn:hover {
+  border-color: var(--green);
+  color: var(--green-dark);
+}
+
+.mini-btn.approve {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--white);
+}
+
+.mini-btn.reject {
+  background: #fff7f4;
+  border-color: #e6b7a6;
+  color: #9c3f22;
+}
+
 .toast {
   position: fixed;
   right: 22px;

@@ -410,17 +410,32 @@ function updateRegionFilterState() {
 
 function renderLeads() {
   document.getElementById("leadTable").innerHTML = leads
-    .map(
-      (lead) => `
+    .map((lead, index) => {
+      const actions =
+        lead.status === "待审核"
+          ? `
+            <div class="table-actions">
+              <button class="mini-btn approve" type="button" data-lead-action="approve" data-lead-index="${index}">通过</button>
+              <button class="mini-btn reject" type="button" data-lead-action="reject" data-lead-index="${index}">驳回</button>
+            </div>
+          `
+          : `
+            <div class="table-actions">
+              <button class="mini-btn" type="button" data-lead-action="follow" data-lead-index="${index}">转跟进</button>
+            </div>
+          `;
+
+      return `
         <tr>
           <td>${lead.company}</td>
           <td>${lead.region}</td>
           <td>${lead.business}</td>
           <td>${lead.volume}</td>
           <td><span class="status">${lead.status}</span></td>
+          <td>${actions}</td>
         </tr>
-      `
-    )
+      `;
+    })
     .join("");
   document.getElementById("demandCount").textContent = leads.length;
   document.getElementById("supplierCount").textContent = suppliers.length;
@@ -448,6 +463,31 @@ function setupEvents() {
   });
 
   document.getElementById("scaleSelect").addEventListener("change", renderPlans);
+
+  document.getElementById("leadTable").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-lead-action]");
+    if (!button) return;
+
+    const index = Number(button.dataset.leadIndex);
+    const lead = leads[index];
+    if (!lead) return;
+
+    const action = button.dataset.leadAction;
+    if (action === "approve") {
+      lead.status = "审核通过";
+      showToast(`已通过「${lead.company}」的需求，建议转入客户跟进。`);
+    }
+    if (action === "reject") {
+      lead.status = "已驳回";
+      showToast(`已驳回「${lead.company}」的需求。`);
+    }
+    if (action === "follow") {
+      lead.status = "跟进中";
+      showToast(`「${lead.company}」已转为跟进中。`);
+    }
+
+    renderLeads();
+  });
 
   document.getElementById("demandForm").addEventListener("submit", (event) => {
     event.preventDefault();
