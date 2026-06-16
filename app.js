@@ -382,6 +382,76 @@ const suppliers = [
   { name: "绿证服务机构", region: "北京", business: "绿证绿电" }
 ];
 
+const marketDemands = [
+  {
+    title: "广东电子制造企业年度购电需求",
+    business: "售电套餐",
+    region: "广东",
+    volume: "月用电量 300 万度以上",
+    note: "希望比较固定让利和月度竞价联动方案。",
+    time: "刚刚"
+  },
+  {
+    title: "河北南网企业月度联动咨询",
+    business: "售电套餐",
+    region: "河北南网",
+    volume: "月用电量 50-300 万度",
+    note: "关注全网均价 + 0 元服务费和偏差考核承担方式。",
+    time: "18 分钟前"
+  },
+  {
+    title: "出口型工厂绿证采购需求",
+    business: "绿证绿电",
+    region: "全国统一",
+    volume: "预计采购 5,000 张",
+    note: "需要双非绿证和材料整理，用于供应链披露。",
+    time: "1 小时前"
+  },
+  {
+    title: "园区跨省跨区资源咨询",
+    business: "跨省跨区",
+    region: "蒙西",
+    volume: "集团多厂区合计用电",
+    note: "希望评估绿电消纳和跨区资源匹配路径。",
+    time: "今天"
+  }
+];
+
+const serviceProviders = [
+  {
+    name: "华能新能源综合能源服务团队",
+    type: "平台运营",
+    areas: ["北京", "河北南网", "蒙西", "广东"],
+    tags: ["央企背景", "绿电资源", "方案顾问"],
+    rating: "4.9",
+    customers: "500+"
+  },
+  {
+    name: "河北区域售电服务商",
+    type: "售电公司",
+    areas: ["河北南网"],
+    tags: ["中长期交易", "0元服务费", "偏差管理"],
+    rating: "4.8",
+    customers: "120+"
+  },
+  {
+    name: "全国绿证服务团队",
+    type: "绿证服务",
+    areas: ["全国统一"],
+    tags: ["双非绿证", "分布式光伏", "材料整理"],
+    rating: "4.9",
+    customers: "300+"
+  },
+  {
+    name: "工业园区能效顾问",
+    type: "增值服务",
+    areas: ["广东", "辽宁", "陕西"],
+    tags: ["能耗分析", "峰谷优化", "用电诊断"],
+    rating: "4.7",
+    customers: "80+"
+  }
+];
+
 const regionContacts = {
   beijing: { title: "北京负责人", name: "张三", phone: "13800000001", wechat: "zhangsan-energy" },
   hebei_south: { title: "河北南网负责人", name: "李四", phone: "13800000002", wechat: "lisi-power" },
@@ -457,6 +527,24 @@ function tagClass(plan) {
   return "";
 }
 
+function getPlanBadge(plan) {
+  if (plan.business === "green") return "绿证";
+  if (plan.business === "cross") return "撮合";
+  if (plan.business === "carbon") return "碳服务";
+  if (plan.id === "hbn-month" || plan.id === "gd-bid" || plan.id === "yn-green") return "热门";
+  if (plan.name.includes("绿电") || plan.tag.includes("绿电")) return "绿电";
+  if (plan.mode.includes("年度") || plan.mode.includes("固定")) return "稳定";
+  return "推荐";
+}
+
+function badgeClass(plan) {
+  const badge = getPlanBadge(plan);
+  if (badge === "热门") return "red";
+  if (badge === "绿电" || badge === "绿证") return "green";
+  if (badge === "碳服务") return "amber";
+  return "blue";
+}
+
 function getServiceTerm(plan) {
   if (plan.mode.includes("月度")) return "月度签约";
   if (plan.mode.includes("年度")) return "年度签约";
@@ -465,54 +553,81 @@ function getServiceTerm(plan) {
   return "按客户需求和合同约定确认";
 }
 
+function getApplicableCustomers(plan) {
+  if (plan.business === "green") return "出口型企业、园区、集团客户、需要 ESG 或供应链披露的企业";
+  if (plan.business === "cross") return "集团客户、园区客户、大型工商业用户";
+  if (plan.business === "carbon") return "有碳盘查、履约、CCER 或低碳披露需求的企业";
+  if (plan.scale.includes("large")) return "月用电量 300 万度以上或负荷波动较大的企业";
+  if (plan.scale.includes("medium")) return "月用电量 50-300 万度的工商业企业";
+  return "月用电量 10-50 万度、希望快速比价的工商业客户";
+}
+
+function getRiskNotice(plan) {
+  if (plan.business === "green") return "绿证资源、年份、项目类型和核销材料以实际库存及交易规则为准。";
+  if (plan.business === "cross") return "跨省跨区交易需确认企业准入、交易路径和资源可得性，前端展示不构成成交承诺。";
+  if (plan.business === "carbon") return "碳服务结果需结合企业边界、行业规则和监管要求判断，不构成交易投资建议。";
+  return "展示价格为意向报价，最终价格、偏差考核和结算方式以交易中心规则及正式合同为准。";
+}
+
+function enhancePlanDetails(plan, details) {
+  return [
+    ...details,
+    ["适用客户", getApplicableCustomers(plan)],
+    ["服务商信息", `${plan.supplier}，当前为平台展示口径，正式合作前需完成资质和服务范围确认。`],
+    ["服务亮点", plan.features.join("；")],
+    ["风险提示", getRiskNotice(plan)],
+    ["下一步对接", "提交需求后，由区域负责人或平台运营联系确认用电数据、合同周期和报价方案。"]
+  ];
+}
+
 function getPlanDetails(plan) {
   if (plan.id === "hbn-month") {
-    return [
+    return enhancePlanDetails(plan, [
       ["价格构成", "河北南网全网中长期直接交易合同加权平均价"],
       ["服务费", "0元固定服务费"],
       ["偏差考核", "供方承担100%偏差考核"],
       ["服务期限", "月度签约"],
       ["增值服务", "用电咨询、能耗分析"]
-    ];
+    ]);
   }
 
   if (plan.business === "green") {
-    return [
+    return enhancePlanDetails(plan, [
       ["价格构成", `${plan.name}，全国统一意向价 ${plan.price || "询价后确认"}`],
       ["服务费", "按采购数量和资源方交付要求确认"],
       ["交付口径", "按项目类型、年份、采购数量和资源库存确认"],
       ["服务期限", "按采购批次确认"],
       ["增值服务", "绿证询价、资源匹配、材料整理、核销协助"]
-    ];
+    ]);
   }
 
   if (plan.business === "cross") {
-    return [
+    return enhancePlanDetails(plan, [
       ["价格构成", "按跨省跨区资源、交易路径和客户准入条件综合确认"],
       ["服务费", "按资源匹配难度和服务范围确认"],
       ["偏差考核", "按交易规则及双方合同约定执行"],
       ["服务期限", "按项目周期或交易周期确认"],
       ["增值服务", "资源撮合、交易路径咨询、绿电消纳建议"]
-    ];
+    ]);
   }
 
   if (plan.business === "carbon") {
-    return [
+    return enhancePlanDetails(plan, [
       ["价格构成", "按碳盘查、碳资产咨询或履约服务范围报价"],
       ["服务费", "按服务事项和交付材料确认"],
       ["履约口径", "按企业行业、排放边界和监管要求确认"],
       ["服务期限", "按项目周期确认"],
       ["增值服务", "碳盘查、履约咨询、CCER线索梳理、低碳披露支持"]
-    ];
+    ]);
   }
 
-  return [
+  return enhancePlanDetails(plan, [
     ["价格构成", `${getRegionName(plan.region)}市场化交易价格或合同约定价格，当前意向报价为 ${plan.price || "询价后确认"}`],
     ["服务费", plan.price?.includes("服务费") ? plan.price.replace(/^.*\+\s*/, "") : "按最终报价和服务协议确认"],
     ["偏差考核", "按交易规则及双方合同约定执行，可在对接时确认承担方式"],
     ["服务期限", getServiceTerm(plan)],
     ["增值服务", "用电咨询、能耗分析、报价比选、合同条款提示"]
-  ];
+  ]);
 }
 
 function renderPlans() {
@@ -526,7 +641,10 @@ function renderPlans() {
           (plan) => `
             <article class="plan-card">
               <div class="card-top">
-                <span class="tag ${tagClass(plan)}">${plan.tag}</span>
+                <div class="tag-row">
+                  <span class="tag ${tagClass(plan)}">${plan.tag}</span>
+                  <span class="tag ${badgeClass(plan)}">${getPlanBadge(plan)}</span>
+                </div>
                 <span class="tag">${getPlanRegionLabel(plan)}</span>
               </div>
               <h3>${plan.name}</h3>
@@ -627,6 +745,54 @@ function renderContactCard() {
       </div>
     </dl>
   `;
+}
+
+function renderMarketDemands() {
+  document.getElementById("marketDemandGrid").innerHTML = marketDemands
+    .map(
+      (demand) => `
+        <article class="demand-card">
+          <div class="card-top">
+            <span class="tag green">${demand.business}</span>
+            <span class="tag">${demand.region}</span>
+          </div>
+          <h3>${demand.title}</h3>
+          <p>${demand.note}</p>
+          <div class="demand-meta">
+            <span>${demand.volume}</span>
+            <span>${demand.time}</span>
+          </div>
+          <button class="text-btn" type="button" data-demand-template="${demand.title}">发布类似需求</button>
+        </article>
+      `
+    )
+    .join("");
+
+  document.querySelectorAll("[data-demand-template]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const form = document.getElementById("demandForm");
+      form.querySelector('[name="note"]').value = `我想发布类似需求：「${button.dataset.demandTemplate}」，请联系我确认方案。`;
+      document.getElementById("demand").scrollIntoView({ behavior: "smooth" });
+      showToast("已把需求方向带入表单。");
+    });
+  });
+}
+
+function renderServiceProviders() {
+  document.getElementById("providerGrid").innerHTML = serviceProviders
+    .map(
+      (provider) => `
+        <article class="provider-card">
+          <div class="provider-avatar">${provider.name.slice(0, 1)}</div>
+          <h3>${provider.name}</h3>
+          <p>${provider.type} · 服务客户 ${provider.customers} · 评分 ${provider.rating}</p>
+          <div class="provider-areas">${provider.areas.map((area) => `<span>${area}</span>`).join("")}</div>
+          <div class="provider-tags">${provider.tags.map((tag) => `<span>${tag}</span>`).join("")}</div>
+          <a class="text-btn" href="#supplier">申请合作</a>
+        </article>
+      `
+    )
+    .join("");
 }
 
 function syncControls() {
@@ -815,6 +981,8 @@ function init() {
   populateFormSelects();
   setupEvents();
   renderPlans();
+  renderMarketDemands();
+  renderServiceProviders();
   renderLeads();
 }
 

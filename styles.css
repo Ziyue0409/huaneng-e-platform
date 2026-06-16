@@ -453,6 +453,12 @@ textarea:focus {
   margin-bottom: 14px;
 }
 
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .tag {
   display: inline-flex;
   min-height: 28px;
@@ -473,6 +479,16 @@ textarea:focus {
 .tag.amber {
   background: #f8efe4;
   color: var(--amber);
+}
+
+.tag.green {
+  background: #e8f4ef;
+  color: var(--green-dark);
+}
+
+.tag.red {
+  background: #fff0ec;
+  color: #a43e1f;
 }
 
 .plan-card p {
@@ -730,6 +746,96 @@ textarea:focus {
   font-size: 14px;
 }
 
+.platform-section {
+  margin-top: 76px;
+}
+
+.demand-grid,
+.provider-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.demand-card,
+.provider-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 260px;
+  padding: 20px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 10px 26px rgba(33, 56, 54, 0.06);
+}
+
+.demand-card h3,
+.provider-card h3 {
+  font-size: 18px;
+}
+
+.demand-card p,
+.provider-card p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.demand-meta {
+  display: grid;
+  gap: 6px;
+  margin: auto 0 16px;
+  color: #415154;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.provider-avatar {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 14px;
+  background: var(--green);
+  color: var(--white);
+  border-radius: 8px;
+  font-weight: 900;
+}
+
+.provider-areas,
+.provider-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.provider-areas span,
+.provider-tags span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.provider-areas span {
+  background: #eef4f6;
+  color: #3f565b;
+}
+
+.provider-tags span {
+  background: #e8f4ef;
+  color: var(--green-dark);
+}
+
+.provider-card .text-btn {
+  width: fit-content;
+  margin-top: auto;
+  padding-top: 18px;
+}
+
 .form-band {
   padding: 44px;
   background: var(--white);
@@ -899,6 +1005,8 @@ td {
   .quick-strip,
   .toolbar,
   .contact-card,
+  .demand-grid,
+  .provider-grid,
   .plan-grid,
   .section-heading,
   .split-section,
