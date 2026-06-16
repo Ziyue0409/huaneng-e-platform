@@ -2,7 +2,10 @@ const regions = [
   { id: "beijing", name: "北京", short: "京" },
   { id: "hebei_south", name: "河北南网", short: "冀南" },
   { id: "mengxi", name: "蒙西", short: "蒙西" },
-  { id: "guangdong", name: "广东", short: "粤" }
+  { id: "guangdong", name: "广东", short: "粤" },
+  { id: "yunnan", name: "云南", short: "滇" },
+  { id: "liaoning", name: "辽宁", short: "辽" },
+  { id: "shaanxi", name: "陕西", short: "陕" }
 ];
 
 const businesses = [
@@ -168,6 +171,123 @@ const plans = [
     price: "0.80 元/千瓦时起",
     desc: "结合峰谷价差和生产排班，识别可优化的用电结构和潜在节费空间。",
     features: ["适合制造业和冷链客户", "需要月度和典型日用电数据", "可拓展负荷画像分析"]
+  },
+  {
+    id: "yn-fixed",
+    region: "yunnan",
+    business: "retail",
+    scale: ["small", "medium"],
+    name: "云南年度固定价套餐",
+    mode: "年度固定",
+    supplier: "云南区域售电商",
+    tag: "水电资源",
+    price: "0.50 元/千瓦时起",
+    desc: "结合云南清洁能源资源特点，面向希望提前锁定年度用电预算的企业客户。",
+    features: ["适合园区和稳定负荷企业", "支持年度和季度方案沟通", "最终报价需结合电压等级和用电曲线"]
+  },
+  {
+    id: "yn-link",
+    region: "yunnan",
+    business: "retail",
+    scale: ["medium", "large"],
+    name: "云南市场联动套餐",
+    mode: "市场联动",
+    supplier: "售电商月度报价",
+    tag: "灵活跟价",
+    price: "市场均价 + 0.01 元/千瓦时服务费",
+    desc: "按云南市场价格变化进行联动展示，适合希望保留市场价格机会的客户。",
+    features: ["支持月度询价和方案调整", "适合中大型工商业用户", "可叠加绿电材料服务"]
+  },
+  {
+    id: "yn-green",
+    region: "yunnan",
+    business: "retail",
+    scale: ["medium", "large"],
+    name: "云南绿电组合套餐",
+    mode: "绿电组合",
+    supplier: "清洁能源资源方",
+    tag: "绿电资源",
+    price: "0.52 元/千瓦时起",
+    desc: "面向有绿色用能和供应链披露需求的企业，优先收集绿电采购和售电组合意向。",
+    features: ["适合出口制造和低碳园区", "可关联绿证采购需求", "按资源情况确认交付口径"]
+  },
+  {
+    id: "ln-fixed",
+    region: "liaoning",
+    business: "retail",
+    scale: ["small", "medium"],
+    name: "辽宁固定价格代理套餐",
+    mode: "固定价格",
+    supplier: "辽宁区域售电商",
+    tag: "预算锁定",
+    price: "0.63 元/千瓦时起",
+    desc: "适合希望降低月度价格波动、提前明确预算区间的工商业客户。",
+    features: ["支持年度和多月合同意向", "适合稳定生产负荷企业", "偏差和结算口径需合同确认"]
+  },
+  {
+    id: "ln-link",
+    region: "liaoning",
+    business: "retail",
+    scale: ["medium", "large"],
+    name: "辽宁月度联动套餐",
+    mode: "月度联动",
+    supplier: "售电公司报价",
+    tag: "市场联动",
+    price: "月度均价 + 0.012 元/千瓦时服务费",
+    desc: "围绕辽宁月度交易节奏进行方案展示，适合愿意跟随市场价格变化的客户。",
+    features: ["月度更新价格策略", "支持多家服务商询价", "适合负荷变化较大的客户"]
+  },
+  {
+    id: "ln-peak",
+    region: "liaoning",
+    business: "retail",
+    scale: ["large"],
+    name: "辽宁分时优化套餐",
+    mode: "峰谷优化",
+    supplier: "能源管理服务商",
+    tag: "负荷优化",
+    price: "0.65 元/千瓦时起",
+    desc: "结合峰谷时段和生产排班，帮助客户识别分时用电优化空间。",
+    features: ["适合装备制造和连续生产企业", "需要典型日用电数据", "可拓展用能诊断报告"]
+  },
+  {
+    id: "sx-fixed",
+    region: "shaanxi",
+    business: "retail",
+    scale: ["small", "medium"],
+    name: "陕西年度固定价套餐",
+    mode: "年度固定",
+    supplier: "陕西区域售电商",
+    tag: "年度方案",
+    price: "0.58 元/千瓦时起",
+    desc: "面向希望锁定年度购电成本的企业，提供固定价意向方案展示。",
+    features: ["适合园区和制造业客户", "支持年度用电计划整理", "最终按合同和交易规则确认"]
+  },
+  {
+    id: "sx-link",
+    region: "shaanxi",
+    business: "retail",
+    scale: ["medium", "large"],
+    name: "陕西市场联动套餐",
+    mode: "市场联动",
+    supplier: "售电商月度报价",
+    tag: "跟随市场",
+    price: "市场均价 + 0.012 元/千瓦时服务费",
+    desc: "适合中大型用户按月关注市场价格变化，并通过服务商获取交易建议。",
+    features: ["支持月度报价对比", "服务费与市场价格分开展示", "适合用电规模较大客户"]
+  },
+  {
+    id: "sx-deviation",
+    region: "shaanxi",
+    business: "retail",
+    scale: ["medium", "large"],
+    name: "陕西偏差共担套餐",
+    mode: "偏差共担",
+    supplier: "平台撮合",
+    tag: "风险共担",
+    price: "0.60 元/千瓦时起",
+    desc: "针对用电预测不稳定的客户，提前约定偏差处理和风险分担方式。",
+    features: ["支持用电计划梳理", "适合负荷波动企业", "可转入后续顾问跟进"]
   },
   {
     id: "green-dual-non-2025",
