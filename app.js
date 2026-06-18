@@ -11,7 +11,8 @@ const regions = [
 const businesses = [
   { id: "retail", name: "售电套餐" },
   { id: "green", name: "绿证绿电" },
-  { id: "cross", name: "跨省跨区" }
+  { id: "cross", name: "跨省跨区" },
+  { id: "carbon", name: "碳交易服务" }
 ];
 
 const plans = [
@@ -351,6 +352,18 @@ const plans = [
     tag: "大客户适用",
     desc: "面向集团、园区和大用电客户，收集跨省跨区资源匹配、绿电消纳和交易咨询需求。",
     features: ["先确认企业资格和用电规模", "后续匹配资源方和售电公司", "不在前端承诺成交价格"]
+  },
+  {
+    id: "carbon-service",
+    region: "all",
+    business: "carbon",
+    scale: ["small", "medium", "large"],
+    name: "碳交易与碳资产咨询包",
+    mode: "碳服务",
+    supplier: "碳资产服务机构",
+    tag: "咨询撮合",
+    desc: "面向有碳盘查、碳配额、CCER、低碳披露需求的企业，提供需求收集和服务商对接。",
+    features: ["支持碳盘查和履约咨询", "可对接碳资产服务商", "一期不做实盘交易和支付"]
   }
 ];
 
@@ -510,12 +523,14 @@ function planMatches(plan) {
 
 function tagClass(plan) {
   if (plan.business === "green") return "blue";
+  if (plan.business === "carbon") return "amber";
   return "";
 }
 
 function getPlanBadge(plan) {
   if (plan.business === "green") return "绿证";
   if (plan.business === "cross") return "撮合";
+  if (plan.business === "carbon") return "碳服务";
   if (plan.id === "hbn-month" || plan.id === "gd-bid" || plan.id === "yn-green") return "热门";
   if (plan.name.includes("绿电") || plan.tag.includes("绿电")) return "绿电";
   if (plan.mode.includes("年度") || plan.mode.includes("固定")) return "稳定";
@@ -526,6 +541,7 @@ function badgeClass(plan) {
   const badge = getPlanBadge(plan);
   if (badge === "热门") return "red";
   if (badge === "绿电" || badge === "绿证") return "green";
+  if (badge === "碳服务") return "amber";
   return "blue";
 }
 
@@ -540,6 +556,7 @@ function getServiceTerm(plan) {
 function getApplicableCustomers(plan) {
   if (plan.business === "green") return "出口型企业、园区、集团客户、需要 ESG 或供应链披露的企业";
   if (plan.business === "cross") return "集团客户、园区客户、大型工商业用户";
+  if (plan.business === "carbon") return "有碳盘查、履约、CCER 或低碳披露需求的企业";
   if (plan.scale.includes("large")) return "月用电量 300 万度以上或负荷波动较大的企业";
   if (plan.scale.includes("medium")) return "月用电量 50-300 万度的工商业企业";
   return "月用电量 10-50 万度、希望快速比价的工商业客户";
@@ -548,6 +565,7 @@ function getApplicableCustomers(plan) {
 function getRiskNotice(plan) {
   if (plan.business === "green") return "绿证资源、年份、项目类型和核销材料以实际库存及交易规则为准。";
   if (plan.business === "cross") return "跨省跨区交易需确认企业准入、交易路径和资源可得性，前端展示不构成成交承诺。";
+  if (plan.business === "carbon") return "碳服务结果需结合企业边界、行业规则和监管要求判断，不构成交易投资建议。";
   return "展示价格为意向报价，最终价格、偏差考核和结算方式以交易中心规则及正式合同为准。";
 }
 
@@ -590,6 +608,16 @@ function getPlanDetails(plan) {
       ["偏差考核", "按交易规则及双方合同约定执行"],
       ["服务期限", "按项目周期或交易周期确认"],
       ["增值服务", "资源撮合、交易路径咨询、绿电消纳建议"]
+    ]);
+  }
+
+  if (plan.business === "carbon") {
+    return enhancePlanDetails(plan, [
+      ["价格构成", "按碳盘查、碳资产咨询或履约服务范围报价"],
+      ["服务费", "按服务事项和交付材料确认"],
+      ["履约口径", "按企业行业、排放边界和监管要求确认"],
+      ["服务期限", "按项目周期确认"],
+      ["增值服务", "碳盘查、履约咨询、CCER线索梳理、低碳披露支持"]
     ]);
   }
 
