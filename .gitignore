@@ -3,3 +3,4 @@ cloudflared*.log
 *.tmp
 Thumbs.db
 .DS_Store
+本地版本归档/
