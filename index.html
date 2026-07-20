@@ -290,6 +290,11 @@
       </section>
     </main>
 
+    <footer class="site-footer">
+      <span>售电小约 · 华能新能源综合能源服务平台</span>
+      <span>版本 1.0</span>
+    </footer>
+
     <div class="modal" id="planModal" aria-hidden="true">
       <div class="modal-backdrop" data-modal-close></div>
       <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="planModalTitle">
@@ -302,6 +307,79 @@
           <button class="primary-btn" type="button" id="modalConsultBtn">咨询该套餐</button>
           <button class="secondary-line-btn" type="button" data-modal-close>返回列表</button>
         </div>
+      </section>
+    </div>
+
+    <div class="modal" id="greenSettlementModal" aria-hidden="true">
+      <div class="modal-backdrop" data-green-settlement-close></div>
+      <section class="modal-panel settlement-modal" role="dialog" aria-modal="true" aria-labelledby="greenSettlementTitle">
+        <button class="modal-close" type="button" data-green-settlement-close aria-label="关闭北京绿电结算测算">×</button>
+        <p class="eyebrow">北京绿电服务</p>
+        <h2 id="greenSettlementTitle">绿电结算测算</h2>
+        <p class="modal-summary">填写账单关键数据，快速估算套餐电费与绿电激励后的结算结果。</p>
+        <form class="settlement-form" id="greenSettlementForm">
+          <label>
+            电价类型
+            <select name="tariffType">
+              <option value="above_1kv">单一制，1kV 及以上</option>
+              <option value="below_1kv">单一制，1kV 以下</option>
+              <option value="two_part">两部制</option>
+            </select>
+          </label>
+          <label>
+            绿电套餐
+            <select name="packageType">
+              <option value="fixed">固定价格 0.40 元/千瓦时</option>
+              <option value="linked">市场均价 + 0.05 元/千瓦时</option>
+            </select>
+          </label>
+          <label id="marketAverageField" hidden>
+            市场均价（元/千瓦时）
+            <input name="marketAverage" type="number" min="0" step="0.001" value="0.350" />
+          </label>
+          <label>
+            当前账单总额（元）
+            <input name="currentTotal" type="number" min="0" step="0.01" value="200000" />
+          </label>
+          <label>
+            市场化购电电费（元）
+            <input name="currentMarketFee" type="number" min="0" step="0.01" value="120000" />
+          </label>
+          <label>
+            尖峰电量（千瓦时）
+            <input name="sharpKwh" type="number" min="0" step="1" value="0" />
+          </label>
+          <label>
+            峰电量（千瓦时）
+            <input name="peakKwh" type="number" min="0" step="1" value="100000" />
+          </label>
+          <label>
+            平电量（千瓦时）
+            <input name="flatKwh" type="number" min="0" step="1" value="100000" />
+          </label>
+          <label>
+            谷电量（千瓦时）
+            <input name="valleyKwh" type="number" min="0" step="1" value="50000" />
+          </label>
+          <label>
+            绿电比例（%）
+            <input name="greenRatio" type="number" min="0" max="100" step="1" value="100" />
+          </label>
+          <label>
+            绿电激励/补贴（元/千瓦时）
+            <input name="greenRewardRate" type="number" min="0" step="0.001" value="0.020" />
+          </label>
+        </form>
+        <div class="settlement-results" aria-live="polite">
+          <div><span>套餐平段单价</span><strong id="settlementPackagePrice"></strong></div>
+          <div><span>折算计价电量</span><strong id="settlementWeightedKwh"></strong></div>
+          <div><span>当前等效平段价</span><strong id="settlementCurrentPrice"></strong></div>
+          <div><span>电网收取的保留费用</span><strong id="settlementRetainedCharges"></strong></div>
+          <div><span>套餐市场化电费</span><strong id="settlementEnergyFee"></strong></div>
+          <div><span>绿电激励/补贴</span><strong id="settlementReward"></strong></div>
+          <div class="settlement-total"><span>预计结算额</span><strong id="settlementBill"></strong><b id="settlementSavings"></b></div>
+        </div>
+        <p class="settlement-note">测算仅替换市场化购电电费。输配电价、系统运行费、政府性基金及其他保留费用均由电网收取，不属于售电公司报价或结算范围，暂按当前账单金额保留。绿电激励/补贴为政策敏感假设，正式方案请以最新政策、账单和合同为准。</p>
       </section>
     </div>
 

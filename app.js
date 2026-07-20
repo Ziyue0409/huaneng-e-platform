@@ -25,8 +25,8 @@ const plans = [
     mode: "固定价格",
     supplier: "平台认证售电商",
     tag: "适合预算锁定",
-    price: "0.69 元/千瓦时起",
-    desc: "以约定周期内固定代理价为核心，便于企业做年度或季度用能预算。",
+    price: "0.40 元/千瓦时",
+    desc: "以 0.40 元/千瓦时固定价格为核心，便于企业做年度或季度用能预算。",
     features: ["合同周期：月度、季度、年度可选", "适合用电曲线稳定的工商业企业", "偏差责任和结算口径需按合同确认"]
   },
   {
@@ -38,22 +38,22 @@ const plans = [
     mode: "市场联动",
     supplier: "售电公司报价",
     tag: "跟随市场",
-    price: "市场均价 + 0.012 元/千瓦时服务费",
+    price: "市场均价 + 0.05 元/千瓦时",
     desc: "按市场交易价格联动结算，适合能接受波动并希望参与市场化价格机会的客户。",
-    features: ["可按月跟踪市场行情", "服务费与交易价格分开展示", "适合中大型用电客户"]
+    features: ["可按月跟踪市场行情", "市场均价加 0.05 元/千瓦时", "适合中大型用电客户"]
   },
   {
     id: "bj-deviation",
     region: "beijing",
     business: "retail",
     scale: ["medium", "large"],
-    name: "北京偏差共担套餐",
-    mode: "偏差共担",
+    name: "北京比例分成套餐",
+    mode: "比例分成",
     supplier: "平台撮合",
     tag: "风险共担",
-    price: "0.70 元/千瓦时起",
-    desc: "针对实际用电和申报电量可能偏离的客户，提前约定偏差处理方式。",
-    features: ["支持用电预测协助", "适合负荷波动企业", "可叠加绿电咨询"]
+    price: "双方各承担 50%",
+    desc: "针对希望采用比例分成方式的客户，提前约定双方各承担 50% 的结算安排。",
+    features: ["双方各承担 50%", "适合负荷波动企业", "可叠加绿电咨询"]
   },
   {
     id: "hbn-fixed",
@@ -581,6 +581,36 @@ function enhancePlanDetails(plan, details) {
 }
 
 function getPlanDetails(plan) {
+  if (plan.id === "bj-fixed") {
+    return enhancePlanDetails(plan, [
+      ["价格构成", "固定价格 0.40 元/千瓦时"],
+      ["服务费", "已包含在意向报价中，具体以正式合同为准"],
+      ["偏差考核", "按交易规则及双方合同约定执行"],
+      ["服务期限", "月度、季度、年度可选"],
+      ["增值服务", "用电咨询、能耗分析、报价比选"]
+    ]);
+  }
+
+  if (plan.id === "bj-link") {
+    return enhancePlanDetails(plan, [
+      ["价格构成", "北京市场均价 + 0.05 元/千瓦时"],
+      ["服务费", "0.05 元/千瓦时"],
+      ["偏差考核", "按交易规则及双方合同约定执行"],
+      ["服务期限", "按客户需求和合同约定确认"],
+      ["增值服务", "市场行情跟踪、用电咨询、能耗分析"]
+    ]);
+  }
+
+  if (plan.id === "bj-deviation") {
+    return enhancePlanDetails(plan, [
+      ["价格构成", "按双方确认的市场交易价格及结算口径执行"],
+      ["比例分成", "双方各承担 50%"],
+      ["偏差考核", "按交易规则及双方合同约定执行"],
+      ["服务期限", "按客户需求和合同约定确认"],
+      ["增值服务", "用电预测协助、偏差分析、绿电咨询"]
+    ]);
+  }
+
   if (plan.id === "hbn-month") {
     return enhancePlanDetails(plan, [
       ["价格构成", "河北南网全网中长期直接交易合同加权平均价"],
@@ -719,6 +749,77 @@ function closePlanModal() {
   modal.setAttribute("aria-hidden", "true");
 }
 
+function getBeijingTouCoefficients(tariffType) {
+  const coefficients = {
+    below_1kv: { sharp: 2.052, peak: 1.71, flat: 1, valley: 0.36 },
+    above_1kv: { sharp: 2.16, peak: 1.8, flat: 1, valley: 0.3 },
+    two_part: { sharp: 1.92, peak: 1.6, flat: 1, valley: 0.4 }
+  };
+  return coefficients[tariffType] || coefficients.above_1kv;
+}
+
+function formatAmount(value) {
+  return new Intl.NumberFormat("zh-CN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(Number.isFinite(value) ? value : 0);
+}
+
+function getNumberInputValue(name) {
+  const value = Number(document.querySelector(`#greenSettlementForm [name="${name}"]`).value);
+  return Number.isFinite(value) && value >= 0 ? value : 0;
+}
+
+function updateGreenSettlement() {
+  const tariffType = document.querySelector('#greenSettlementForm [name="tariffType"]').value;
+  const packageType = document.querySelector('#greenSettlementForm [name="packageType"]').value;
+  const marketAverage = getNumberInputValue("marketAverage");
+  const currentTotal = getNumberInputValue("currentTotal");
+  const currentMarketFee = getNumberInputValue("currentMarketFee");
+  const sharp = getNumberInputValue("sharpKwh");
+  const peak = getNumberInputValue("peakKwh");
+  const flat = getNumberInputValue("flatKwh");
+  const valley = getNumberInputValue("valleyKwh");
+  const greenRatio = Math.min(getNumberInputValue("greenRatio"), 100) / 100;
+  const greenRewardRate = getNumberInputValue("greenRewardRate");
+  const coefficients = getBeijingTouCoefficients(tariffType);
+  const marketizedKwh = sharp + peak + flat + valley;
+  const weightedKwh = sharp * coefficients.sharp + peak * coefficients.peak + flat + valley * coefficients.valley;
+  const retailPrice = packageType === "fixed" ? 0.4 : marketAverage + 0.05;
+  const packageEnergyFee = retailPrice * weightedKwh;
+  const retainedCharges = Math.max(currentTotal - currentMarketFee, 0);
+  const greenKwh = marketizedKwh * greenRatio;
+  const greenReward = greenKwh * greenRewardRate;
+  const estimatedBill = retainedCharges + packageEnergyFee - greenReward;
+  const savings = currentTotal - estimatedBill;
+  const currentEquivalentPrice = weightedKwh ? currentMarketFee / weightedKwh : 0;
+
+  document.getElementById("settlementPackagePrice").textContent = `${retailPrice.toFixed(3)} 元/千瓦时`;
+  document.getElementById("settlementWeightedKwh").textContent = `${formatAmount(weightedKwh)} 千瓦时`;
+  document.getElementById("settlementCurrentPrice").textContent = `${currentEquivalentPrice.toFixed(3)} 元/千瓦时`;
+  document.getElementById("settlementRetainedCharges").textContent = `${formatAmount(retainedCharges)} 元`;
+  document.getElementById("settlementEnergyFee").textContent = `${formatAmount(packageEnergyFee)} 元`;
+  document.getElementById("settlementReward").textContent = `-${formatAmount(greenReward)} 元`;
+  document.getElementById("settlementBill").textContent = `${formatAmount(estimatedBill)} 元`;
+  const savingsElement = document.getElementById("settlementSavings");
+  savingsElement.textContent = `${savings >= 0 ? "预计节省" : "预计增加"} ${formatAmount(Math.abs(savings))} 元`;
+  savingsElement.classList.toggle("is-negative", savings < 0);
+  document.getElementById("marketAverageField").hidden = packageType === "fixed";
+}
+
+function openGreenSettlementModal() {
+  const modal = document.getElementById("greenSettlementModal");
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  updateGreenSettlement();
+}
+
+function closeGreenSettlementModal() {
+  const modal = document.getElementById("greenSettlementModal");
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+}
+
 function renderContactCard() {
   const contact = selectedBusiness === "green" ? greenContact : regionContacts[selectedRegion];
   const scope = selectedBusiness === "green" ? "全国统一绿证业务" : `${getRegionName(selectedRegion)}区域业务`;
@@ -744,7 +845,10 @@ function renderContactCard() {
         <dd>${contact.wechat}</dd>
       </div>
     </dl>
+    ${selectedBusiness === "retail" && selectedRegion === "beijing" ? '<button class="text-btn settlement-link" type="button" id="openGreenSettlement">北京绿电结算测算</button>' : ""}
   `;
+
+  document.getElementById("openGreenSettlement")?.addEventListener("click", openGreenSettlementModal);
 }
 
 function renderMarketDemands() {
@@ -898,6 +1002,13 @@ function setupEvents() {
     button.addEventListener("click", closePlanModal);
   });
 
+  document.querySelectorAll("[data-green-settlement-close]").forEach((button) => {
+    button.addEventListener("click", closeGreenSettlementModal);
+  });
+
+  document.getElementById("greenSettlementForm").addEventListener("input", updateGreenSettlement);
+  document.getElementById("greenSettlementForm").addEventListener("change", updateGreenSettlement);
+
   document.getElementById("modalConsultBtn").addEventListener("click", () => {
     const plan = plans.find((item) => item.id === activePlanId);
     if (!plan) return;
@@ -916,7 +1027,10 @@ function setupEvents() {
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closePlanModal();
+    if (event.key === "Escape") {
+      closePlanModal();
+      closeGreenSettlementModal();
+    }
   });
 
   document.getElementById("leadTable").addEventListener("click", (event) => {

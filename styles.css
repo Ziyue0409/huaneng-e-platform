@@ -658,6 +658,76 @@ textarea:focus {
   gap: 12px;
 }
 
+.settlement-link {
+  width: fit-content;
+  margin-top: 4px;
+  padding: 0;
+}
+
+.settlement-modal {
+  width: min(900px, 100%);
+}
+
+.settlement-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
+  margin: 22px 0;
+}
+
+.settlement-results {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.settlement-results > div {
+  display: grid;
+  gap: 6px;
+  min-height: 82px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f6f8f6;
+}
+
+.settlement-results span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.settlement-results strong {
+  color: var(--green-dark);
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.settlement-results .settlement-total {
+  grid-column: span 3;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  min-height: 74px;
+  background: #e8f4ef;
+  border-color: #bcdccf;
+}
+
+.settlement-total b {
+  grid-column: 1 / -1;
+  color: var(--green-dark);
+  font-size: 14px;
+}
+
+.settlement-total b.is-negative {
+  color: #a43e1f;
+}
+
+.settlement-note {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
 .secondary-line-btn {
   display: inline-flex;
   align-items: center;
@@ -670,6 +740,18 @@ textarea:focus {
   color: #334447;
   cursor: pointer;
   font-weight: 800;
+}
+
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  width: min(100% - 48px, 1180px);
+  margin: 0 auto 32px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .split-section {
@@ -1015,6 +1097,10 @@ td {
     grid-template-columns: 1fr;
   }
 
+  .site-footer {
+    width: min(100% - 40px, 1180px);
+  }
+
   .split-section,
   .form-band {
     padding: 28px;
@@ -1077,6 +1163,13 @@ td {
     margin: 58px auto;
   }
 
+  .site-footer {
+    width: min(100% - 32px, 1180px);
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
   .plan-card {
     min-height: auto;
   }
@@ -1102,5 +1195,14 @@ td {
   .detail-list div {
     grid-template-columns: 1fr;
     gap: 6px;
+  }
+
+  .settlement-form,
+  .settlement-results {
+    grid-template-columns: 1fr;
+  }
+
+  .settlement-results .settlement-total {
+    grid-column: auto;
   }
 }
