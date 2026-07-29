@@ -3,22 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>售电小约 | 售电与绿证服务平台</title>
+    <title>售电小新 | 综合能源服务平台</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="#home" aria-label="售电小约首页">
+      <a class="brand" href="#home" aria-label="售电小新首页">
         <span class="brand-mark">E</span>
-        <span>售电小约</span>
+        <span>售电小新</span>
       </a>
       <nav class="nav-links" aria-label="主导航">
-        <a href="#plans">套餐</a>
-        <a href="#demand">发布需求</a>
-        <a href="#supplier">商家入驻</a>
-        <a href="#console">后台原型</a>
+        <a href="#plans">售电业务</a>
       </nav>
-      <a class="nav-action" href="#demand">获取方案</a>
+      <a class="nav-action" href="#plans">查看方案</a>
     </header>
 
     <main id="home">
@@ -26,10 +23,10 @@
         <img src="assets/energy-hero.png" alt="现代工业园区、电网和光伏能源场景" />
         <div class="hero-overlay"></div>
         <div class="hero-content">
-          <p class="eyebrow">工商业售电 · 绿证绿电 · 跨省跨区 · 碳服务</p>
-          <h1 id="hero-title">华能新能源综合能源服务平台</h1>
+          <p class="eyebrow">工商业售电 · 绿证绿电 · 跨省跨区</p>
+          <h1 id="hero-title"><span>XX新能源综合能源</span><span>服务平台</span></h1>
           <p class="hero-copy">
-            先选择售电、绿证绿电、跨省跨区或碳服务，再按业务需要选择北京、河北南网、蒙西、广东、云南、辽宁、陕西区域，并沉淀可跟进线索。
+            先选择售电业务、绿证绿电或跨省跨区服务，再按业务需要选择北京、河北南网、蒙西、广东、云南、辽宁、陕西区域，并沉淀可跟进线索。
           </p>
 
           <div class="selector-panel" aria-label="快速筛选">
@@ -42,10 +39,10 @@
               <div class="segmented" id="regionTabs"></div>
               <span class="hero-hint" id="heroRegionHint"></span>
             </div>
-            <div class="hero-actions">
-              <a class="primary-btn" href="#plans">查看套餐</a>
-              <a class="secondary-btn" href="#demand">发布需求</a>
-            </div>
+          <div class="hero-actions">
+            <a class="primary-btn" href="#plans">查看售电业务</a>
+            <button class="secondary-btn" type="button" id="openAssistantFromHero">咨询小新助手</button>
+          </div>
           </div>
         </div>
       </section>
@@ -57,7 +54,7 @@
         </div>
         <div>
           <strong>27+</strong>
-          <span>模拟套餐</span>
+          <span>模拟售电方案</span>
         </div>
         <div>
           <strong>统一</strong>
@@ -72,11 +69,11 @@
       <section class="section" id="plans">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">套餐中心</p>
+            <p class="eyebrow">售电业务</p>
             <h2>先选业务，再按区域展示服务</h2>
           </div>
           <p>
-            套餐以业务类型为第一筛选，再结合各区域常见制式合同选项展示，包括固定价格、市场联动、偏差共担和分时优化等模式。最终价格、周期和条款以交易中心规则及服务商合同为准。
+            售电业务以业务类型为第一筛选，再结合各区域常见制式合同选项展示代理购电价格、业务类别和方案差异。最终价格、周期和条款以交易中心规则及正式合同为准。
           </p>
         </div>
         <div class="toolbar">
@@ -89,52 +86,125 @@
             <select id="regionSelect"></select>
             <span class="field-hint" id="regionHint"></span>
           </label>
-          <label>
-            用电规模
-            <select id="scaleSelect">
-              <option value="all">全部规模</option>
-              <option value="small">月用电量 10-50 万度</option>
-              <option value="medium">月用电量 50-300 万度</option>
-              <option value="large">月用电量 300 万度以上</option>
-            </select>
-          </label>
         </div>
+        <div class="green-business-panel" id="greenBusinessPanel"></div>
+        <div class="regional-price-panel" id="regionalPricePanel"></div>
+        <div class="cross-province-panel" id="crossProvincePanel"></div>
         <div class="plan-grid" id="planGrid"></div>
+        <section class="package-recommendation" id="packageRecommendation" aria-label="套餐推荐"></section>
         <aside class="contact-card" id="contactCard" aria-label="区域负责人"></aside>
       </section>
 
-      <section class="section split-section" id="green">
+      <section class="split-section" id="green" hidden>
         <div class="content-block">
-          <p class="eyebrow">绿证交易报价专区</p>
-          <h2>双非、通道和分布式光伏绿证</h2>
+          <p class="eyebrow">绿证绿电服务</p>
+          <h2>企业绿色用能与绿证买卖服务</h2>
           <p>
-            针对需要绿色电力消费声明、ESG 披露、出口供应链证明或品牌低碳沟通的企业，先展示双非绿证、通道绿证和分布式光伏绿证的意向价格，客户感兴趣后再进入人工对接。
+            每一张绿证均对应1000千瓦时的绿色电力，由国家可再生能源信息管理中心核发，具备唯一编号与法律效力。绿证可在北京、广州等全国各大电力交易中心流通，支持跨省交易，打破地域限制，满足企业多元化的绿电消纳需求。可作为企业使用绿色电力的有效凭证，在碳排放核算中抵扣外购电力间接排放，降低碳足迹，帮助企业完成可再生能源电力消纳责任权重考核，提升企业ESG评级，彰显社会责任，增强品牌绿色竞争力。
           </p>
-          <ul class="check-list">
-            <li>双非绿证（2025）7 元/张，双非绿证（2026）9 元/张</li>
-            <li>通道绿证 4.5 元/张，分布式光伏绿证 3.5 元/张</li>
-            <li>前端先展示意向报价，后续由平台或合作服务商确认资源</li>
-          </ul>
-          <a class="primary-btn compact" href="#demand">提交绿证需求</a>
-        </div>
-        <div class="info-grid" aria-label="绿证服务流程">
-          <div>
-            <span>01</span>
-            <strong>需求确认</strong>
-            <p>确认企业用电量、声明口径、预算与时间要求。</p>
+          <div class="green-market-summary" aria-label="近期绿证成交均价">
+            <div class="green-market-heading">
+              <div>
+                <p class="eyebrow">近期市场参考</p>
+                <h3>绿证近期价格参考</h3>
+              </div>
+              <span>按资源类型展示</span>
+            </div>
+            <div class="green-average-grid">
+              <div>
+                <span>双非绿证（2025）</span>
+                <strong>7 元/张</strong>
+              </div>
+              <div>
+                <span>双非绿证（2026）</span>
+                <strong>9 元/张</strong>
+              </div>
+              <div>
+                <span>通道绿证</span>
+                <strong>4.5 元/张</strong>
+              </div>
+              <div>
+                <span>分布式光伏绿证</span>
+                <strong>3.5 元/张</strong>
+              </div>
+              <div>
+                <span>补贴绿证</span>
+                <strong>待更新</strong>
+              </div>
+            </div>
+            <p class="market-note">价格会随生产年份、资源类型、交付条件和供需情况变化，最终以实际交易确认结果为准。</p>
+            <a class="source-link" href="http://103.120.198.33:21004/pxf-green-out-new/home" target="_blank" rel="noreferrer">实时绿证查询</a>
           </div>
-          <div>
-            <span>02</span>
-            <strong>资源询价</strong>
-            <p>按项目类型、年份和采购数量匹配绿证资源。</p>
+          <div class="green-inventory" aria-label="可供绿证数量">
+            <div>
+              <p class="eyebrow">库存数量</p>
+              <h3>平台可协调绿证数量</h3>
+              <p>资源数量以实时库存和资源方确认结果为准。</p>
+            </div>
+            <div class="green-inventory-values">
+              <div><span>光伏</span><strong>xxx 万张</strong></div>
+              <div><span>风电</span><strong>xxx 万张</strong></div>
+              <div><span>平价</span><strong>xxx 万张</strong></div>
+              <div><span>补贴</span><strong>xxx 万张</strong></div>
+            </div>
           </div>
-          <div>
-            <span>03</span>
-            <strong>材料交付</strong>
-            <p>协助整理采购凭证、消费声明和归档材料。</p>
-          </div>
+          <form class="green-demand-form" id="greenDemandForm">
+            <div class="green-demand-heading">
+              <div>
+                <p class="eyebrow">绿证买卖需求</p>
+                <h3>登记您的采购或出售计划</h3>
+              </div>
+              <button class="secondary-line-btn compact" id="greenContactShortcut" type="button">联系绿证负责人</button>
+            </div>
+            <div class="green-demand-grid">
+              <label>
+                需求方向
+                <select name="tradeSide" required>
+                  <option value="购买">购买绿证</option>
+                  <option value="出售">出售绿证</option>
+                </select>
+              </label>
+              <label>
+                绿证类型
+                <select name="certificateType" required>
+                  <option>不限，需资源匹配</option>
+                  <option>双非绿证</option>
+                  <option>通道绿证</option>
+                  <option>分布式光伏绿证</option>
+                  <option>补贴绿证</option>
+                </select>
+              </label>
+              <label>
+                企业名称
+                <input name="company" required placeholder="请填写企业名称" />
+              </label>
+              <label>
+                联系方式
+                <input name="contact" required placeholder="联系人、手机或微信" />
+              </label>
+              <label>
+                预计数量（张）
+                <input name="quantity" type="number" min="1" step="1" placeholder="请填写数量" />
+              </label>
+              <label class="wide">
+                补充说明
+                <textarea name="note" rows="3" placeholder="可填写生产年份、项目类型、采购或出售时间等"></textarea>
+              </label>
+            </div>
+            <button class="primary-btn compact" type="submit">提交绿证需求</button>
+          </form>
         </div>
       </section>
+
+      <section class="operator-area" id="operatorArea" hidden>
+        <div class="operator-header">
+          <div>
+            <p class="eyebrow">内部工作区</p>
+            <h2>运营后台</h2>
+            <p>市场动态、资源管理、客户需求及运营审核内容仅供授权人员查看。</p>
+          </div>
+          <button class="operator-exit" type="button" id="closeBackend">退出后台</button>
+        </div>
 
       <section class="section platform-section" id="market">
         <div class="section-heading">
@@ -142,7 +212,7 @@
             <p class="eyebrow">市场动态</p>
             <h2>最新需求</h2>
           </div>
-          <p>展示近期模拟线索，帮助客户理解平台可承接的购电、绿证、跨省跨区和碳服务需求类型。</p>
+          <p>展示近期模拟线索，帮助客户理解平台可承接的购电、绿证和跨省跨区需求类型。</p>
         </div>
         <div class="demand-grid" id="marketDemandGrid"></div>
       </section>
@@ -153,7 +223,7 @@
             <p class="eyebrow">供给侧资源</p>
             <h2>推荐服务商</h2>
           </div>
-          <p>先以平台认证和资源能力为线索展示，后续接后端后可扩展为商家入驻、资质审核和服务评分体系。</p>
+          <p>先以平台认证和资源能力为线索展示，后续可扩展为资质审核、服务评分和资源匹配体系。</p>
         </div>
         <div class="provider-grid" id="providerGrid"></div>
       </section>
@@ -162,7 +232,7 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow">买方入口</p>
-            <h2>发布购电、绿电或碳服务需求</h2>
+            <h2>发布购电、绿电或绿证需求</h2>
           </div>
           <p>表单当前为前端模拟提交，会实时进入下方后台原型列表，便于演示完整获客流程。</p>
         </div>
@@ -204,56 +274,11 @@
         </form>
       </section>
 
-      <section class="section form-band supplier-band" id="supplier">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">供给侧入口</p>
-            <h2>售电商与服务商入驻</h2>
-          </div>
-          <p>适合售电公司、绿证服务商、跨省跨区资源方和碳服务机构提交合作信息。</p>
-        </div>
-        <form class="form-grid" id="supplierForm">
-          <label>
-            公司名称
-            <input name="supplier" required placeholder="例如：某某售电有限公司" />
-          </label>
-          <label>
-            服务类型
-            <select name="business" required></select>
-          </label>
-          <label>
-            服务区域
-            <select name="region" required></select>
-          </label>
-          <label>
-            资质状态
-            <select name="status" required>
-              <option>已完成市场注册</option>
-              <option>资质待平台审核</option>
-              <option>仅提供咨询服务</option>
-            </select>
-          </label>
-          <label>
-            联系人
-            <input name="contact" required placeholder="姓名" />
-          </label>
-          <label>
-            联系方式
-            <input name="phone" required placeholder="手机或微信" />
-          </label>
-          <label class="wide">
-            服务说明
-            <textarea name="note" rows="4" placeholder="请说明可服务区域、套餐类型、资源优势。"></textarea>
-          </label>
-          <button class="primary-btn form-submit" type="submit">提交入驻</button>
-        </form>
-      </section>
-
       <section class="section console" id="console">
         <div class="section-heading">
           <div>
             <p class="eyebrow">运营后台原型</p>
-            <h2>线索、商家和套餐管理视图</h2>
+            <h2>线索与售电业务管理视图</h2>
           </div>
           <p>后端接入前，先用前端状态模拟运营台账，帮助确认下一步数据库和接口字段。</p>
         </div>
@@ -263,8 +288,8 @@
             <strong id="demandCount">3</strong>
           </article>
           <article class="metric-card">
-            <span>待审核商家</span>
-            <strong id="supplierCount">2</strong>
+            <span>覆盖售电区域</span>
+            <strong>7</strong>
           </article>
           <article class="metric-card">
             <span>可展示套餐</span>
@@ -288,12 +313,66 @@
           </table>
         </div>
       </section>
+      </section>
     </main>
 
     <footer class="site-footer">
-      <span>售电小约 · 华能新能源综合能源服务平台</span>
-      <span>版本 1.0</span>
+      <span>售电小新 · XX新能源综合能源服务平台</span>
+      <span>版本 2.0（本地开发中）</span>
+      <button class="footer-operator-btn" type="button" id="openBackendAccess">运营后台</button>
     </footer>
+
+    <aside class="assistant-widget" aria-label="需求咨询助手">
+      <section class="assistant-panel" id="assistantPanel" aria-labelledby="assistantTitle" hidden>
+        <header class="assistant-header">
+          <div class="assistant-identity">
+            <span class="assistant-avatar" aria-hidden="true"><img src="assets/xiaoxin-assistant.png" alt="" /></span>
+            <div>
+              <strong id="assistantTitle">小新助手</strong>
+              <span>需求收集</span>
+            </div>
+          </div>
+          <button class="assistant-close" id="assistantClose" type="button" aria-label="关闭小新助手" title="关闭">
+            <i data-lucide="x"></i>
+          </button>
+        </header>
+        <div class="assistant-message">
+          您好，我可以协助记录购电、绿电或绿证需求。请选择您希望对接的服务。
+        </div>
+        <div class="assistant-options" id="assistantOptions">
+          <button type="button" data-assistant-demand="购电需求" data-assistant-business="retail">购电需求</button>
+          <button type="button" data-assistant-demand="绿电需求" data-assistant-business="retail">绿电需求</button>
+          <button type="button" data-assistant-demand="绿证需求" data-assistant-business="green">绿证需求</button>
+        </div>
+        <form class="assistant-form" id="assistantLeadForm" hidden>
+          <p id="assistantSelection"></p>
+          <label>
+            企业名称
+            <input name="company" required placeholder="请填写企业名称" />
+          </label>
+          <label>
+            联系人及联系方式
+            <input name="contact" required placeholder="姓名、手机或微信" />
+          </label>
+          <label>
+            预计需求量
+            <input name="volume" placeholder="例如：月用电 100 万度" />
+          </label>
+          <label>
+            补充说明
+            <textarea name="note" rows="3" placeholder="可填写区域、采购周期或绿证年份等"></textarea>
+          </label>
+          <div class="assistant-form-actions">
+            <button class="primary-btn compact" type="submit">提交需求</button>
+            <button class="text-btn" id="assistantReset" type="button">重新选择</button>
+          </div>
+        </form>
+      </section>
+      <button class="assistant-launcher" id="assistantLauncher" type="button" aria-expanded="false" aria-controls="assistantPanel" title="打开小新助手">
+        <img src="assets/xiaoxin-assistant.png" alt="" />
+        <span>小新助手</span>
+      </button>
+    </aside>
 
     <div class="modal" id="planModal" aria-hidden="true">
       <div class="modal-backdrop" data-modal-close></div>
@@ -310,80 +389,62 @@
       </section>
     </div>
 
-    <div class="modal" id="greenSettlementModal" aria-hidden="true">
-      <div class="modal-backdrop" data-green-settlement-close></div>
-      <section class="modal-panel settlement-modal" role="dialog" aria-modal="true" aria-labelledby="greenSettlementTitle">
-        <button class="modal-close" type="button" data-green-settlement-close aria-label="关闭北京绿电结算测算">×</button>
-        <p class="eyebrow">北京绿电服务</p>
-        <h2 id="greenSettlementTitle">绿电结算测算</h2>
-        <p class="modal-summary">填写账单关键数据，快速估算套餐电费与绿电激励后的结算结果。</p>
-        <form class="settlement-form" id="greenSettlementForm">
+    <div class="modal" id="backendAccessModal" aria-hidden="true">
+      <div class="modal-backdrop" data-backend-access-close></div>
+      <section class="modal-panel backend-access-modal" role="dialog" aria-modal="true" aria-labelledby="backendAccessTitle">
+        <button class="modal-close" type="button" aria-label="关闭" data-backend-access-close><i data-lucide="x"></i></button>
+        <p class="eyebrow">运营授权</p>
+        <h2 id="backendAccessTitle">进入运营后台</h2>
+        <p>请输入授权码后查看市场动态、资源信息、客户需求及运营审核内容。</p>
+        <form class="backend-access-form" id="backendAccessForm">
           <label>
-            电价类型
-            <select name="tariffType">
-              <option value="above_1kv">单一制，1kV 及以上</option>
-              <option value="below_1kv">单一制，1kV 以下</option>
-              <option value="two_part">两部制</option>
-            </select>
+            授权码
+            <input type="password" name="accessCode" autocomplete="current-password" required placeholder="请输入授权码" />
+          </label>
+          <p class="field-error" id="backendAccessError" hidden>授权码不正确，请重新输入。</p>
+          <button class="primary-btn" type="submit">进入后台</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="modal" id="transmissionCalculatorModal" aria-hidden="true">
+      <div class="modal-backdrop" data-transmission-close></div>
+      <section class="modal-panel transmission-modal" role="dialog" aria-modal="true" aria-labelledby="transmissionCalculatorTitle">
+        <button class="modal-close" type="button" data-transmission-close aria-label="关闭输配电价计算器">×</button>
+        <p class="eyebrow" id="transmissionCalculatorEyebrow">跨省跨区服务</p>
+        <h2 id="transmissionCalculatorTitle">输配电价计算器</h2>
+        <p class="modal-summary">按受端需求电量、送端电能量价格、输配电价及线损率，测算跨省跨区电能量落地成本。</p>
+        <form class="compare-form" id="transmissionCalculatorForm">
+          <label>
+            受端需求电量（千瓦时）
+            <input name="deliveredKwh" type="number" min="0" step="1" value="100000" />
           </label>
           <label>
-            绿电套餐
-            <select name="packageType">
-              <option value="fixed">固定价格 0.40 元/千瓦时</option>
-              <option value="linked">市场均价 + 0.05 元/千瓦时</option>
-            </select>
-          </label>
-          <label id="marketAverageField" hidden>
-            市场均价（元/千瓦时）
-            <input name="marketAverage" type="number" min="0" step="0.001" value="0.350" />
+            送端电能量价格（元/千瓦时）
+            <input name="sourceEnergyPrice" type="number" min="0" step="0.001" placeholder="请输入成交价格" />
           </label>
           <label>
-            当前账单总额（元）
-            <input name="currentTotal" type="number" min="0" step="0.01" value="200000" />
+            输配电价（元/千瓦时）
+            <input name="transmissionPrice" type="number" min="0" step="0.001" placeholder="请输入合同或公告价格" />
           </label>
           <label>
-            市场化购电电费（元）
-            <input name="currentMarketFee" type="number" min="0" step="0.01" value="120000" />
-          </label>
-          <label>
-            尖峰电量（千瓦时）
-            <input name="sharpKwh" type="number" min="0" step="1" value="0" />
-          </label>
-          <label>
-            峰电量（千瓦时）
-            <input name="peakKwh" type="number" min="0" step="1" value="100000" />
-          </label>
-          <label>
-            平电量（千瓦时）
-            <input name="flatKwh" type="number" min="0" step="1" value="100000" />
-          </label>
-          <label>
-            谷电量（千瓦时）
-            <input name="valleyKwh" type="number" min="0" step="1" value="50000" />
-          </label>
-          <label>
-            绿电比例（%）
-            <input name="greenRatio" type="number" min="0" max="100" step="1" value="100" />
-          </label>
-          <label>
-            绿电激励/补贴（元/千瓦时）
-            <input name="greenRewardRate" type="number" min="0" step="0.001" value="0.020" />
+            线损率（%）
+            <input name="lossRate" type="number" min="0" max="99" step="0.01" value="2.00" />
           </label>
         </form>
-        <div class="settlement-results" aria-live="polite">
-          <div><span>套餐平段单价</span><strong id="settlementPackagePrice"></strong></div>
-          <div><span>折算计价电量</span><strong id="settlementWeightedKwh"></strong></div>
-          <div><span>当前等效平段价</span><strong id="settlementCurrentPrice"></strong></div>
-          <div><span>电网收取的保留费用</span><strong id="settlementRetainedCharges"></strong></div>
-          <div><span>套餐市场化电费</span><strong id="settlementEnergyFee"></strong></div>
-          <div><span>绿电激励/补贴</span><strong id="settlementReward"></strong></div>
-          <div class="settlement-total"><span>预计结算额</span><strong id="settlementBill"></strong><b id="settlementSavings"></b></div>
+        <div class="settlement-results transmission-results" aria-live="polite">
+          <div><span>送端需购电量</span><strong id="transmissionSourceKwh"></strong></div>
+          <div><span>线损电量</span><strong id="transmissionLossKwh"></strong></div>
+          <div><span>送端电能量费用</span><strong id="transmissionEnergyFee"></strong></div>
+          <div><span>输配电费用</span><strong id="transmissionFee"></strong></div>
+          <div class="settlement-total"><span>预估落地电能量成本</span><strong id="transmissionTotalCost"></strong><b id="transmissionLandedPrice"></b></div>
         </div>
-        <p class="settlement-note">测算仅替换市场化购电电费。输配电价、系统运行费、政府性基金及其他保留费用均由电网收取，不属于售电公司报价或结算范围，暂按当前账单金额保留。绿电激励/补贴为政策敏感假设，正式方案请以最新政策、账单和合同为准。</p>
+        <p class="settlement-note">本测算仅用于跨省跨区电能量成本初步比较。输配电价、线损率和成交单价须以交易公告、通道规则及正式合同为准；系统运行费、政府性基金等电网收取费用未纳入。</p>
       </section>
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

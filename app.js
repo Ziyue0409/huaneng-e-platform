@@ -9,10 +9,9 @@ const regions = [
 ];
 
 const businesses = [
-  { id: "retail", name: "售电套餐" },
+  { id: "retail", name: "售电业务" },
   { id: "green", name: "绿证绿电" },
-  { id: "cross", name: "跨省跨区" },
-  { id: "carbon", name: "碳交易服务" }
+  { id: "cross", name: "跨省跨区" }
 ];
 
 const plans = [
@@ -298,7 +297,6 @@ const plans = [
     mode: "绿证交易",
     supplier: "平台绿证服务团队",
     tag: "2025 年份",
-    price: "7 元/张",
     desc: "适合需要 2025 年份绿色电力消费材料的企业，作为 ESG、供应链披露或客户验厂的需求入口。",
     features: ["按张数和使用场景确认需求", "支持材料整理和后续核销协助", "最终资源以可匹配库存为准"]
   },
@@ -311,7 +309,6 @@ const plans = [
     mode: "绿证交易",
     supplier: "平台绿证服务团队",
     tag: "2026 年份",
-    price: "9 元/张",
     desc: "面向提前规划 2026 年绿色电力消费声明和年度 ESG 披露的企业，便于锁定预算和采购计划。",
     features: ["适合年度预算提前锁定", "支持按项目类型和年份询价", "后续可对接批量采购方案"]
   },
@@ -324,7 +321,6 @@ const plans = [
     mode: "绿证交易",
     supplier: "绿证资源方",
     tag: "通道资源",
-    price: "4.5 元/张",
     desc: "以通道资源匹配为主，适合对价格敏感、希望快速获取绿证报价的客户线索收集。",
     features: ["适合批量询价和快速沟通", "按资源可得性确认交付周期", "平台先收需求再匹配服务商"]
   },
@@ -337,55 +333,39 @@ const plans = [
     mode: "绿证交易",
     supplier: "分布式光伏资源方",
     tag: "光伏资源",
-    price: "3.5 元/张",
     desc: "面向有分布式光伏绿证采购偏好的企业，适合低碳宣传、园区用能和供应链材料补充。",
     features: ["突出分布式光伏来源", "适合中小批量采购意向", "最终以资源方确认为准"]
   },
   {
-    id: "cross-match",
+    id: "green-subsidized",
     region: "all",
-    business: "cross",
-    scale: ["large"],
-    name: "跨省跨区资源撮合服务",
-    mode: "资源撮合",
-    supplier: "平台能源顾问",
-    tag: "大客户适用",
-    desc: "面向集团、园区和大用电客户，收集跨省跨区资源匹配、绿电消纳和交易咨询需求。",
-    features: ["先确认企业资格和用电规模", "后续匹配资源方和售电公司", "不在前端承诺成交价格"]
-  },
-  {
-    id: "carbon-service",
-    region: "all",
-    business: "carbon",
+    business: "green",
     scale: ["small", "medium", "large"],
-    name: "碳交易与碳资产咨询包",
-    mode: "碳服务",
-    supplier: "碳资产服务机构",
-    tag: "咨询撮合",
-    desc: "面向有碳盘查、碳配额、CCER、低碳披露需求的企业，提供需求收集和服务商对接。",
-    features: ["支持碳盘查和履约咨询", "可对接碳资产服务商", "一期不做实盘交易和支付"]
-  }
+    name: "补贴绿证",
+    mode: "绿证交易",
+    supplier: "平台绿证服务团队",
+    tag: "补贴资源",
+    desc: "面向关注补贴属性及综合采购成本的企业，先确认项目、年份和资源可得性后匹配方案。",
+    features: ["按项目和资源可得性询价", "适合批量采购及年度规划", "最终交付以交易规则和资源确认结果为准"]
+  },
 ];
 
 let selectedRegion = "beijing";
 let selectedBusiness = "retail";
 let activePlanId = null;
+const OPERATOR_ACCESS_CODE = "admin2026";
+const OPERATOR_ACCESS_KEY = "sales-platform-operator-access";
 
 const leads = [
-  { company: "北京某精密制造公司", region: "北京", business: "售电套餐", volume: "50-300 万度", status: "待分配" },
+  { company: "北京某精密制造公司", region: "北京", business: "售电业务", volume: "50-300 万度", status: "待分配" },
   { company: "广东某电子园区", region: "广东", business: "绿证绿电", volume: "300 万度以上", status: "已联系" },
   { company: "蒙西某材料企业", region: "蒙西", business: "跨省跨区", volume: "300 万度以上", status: "待审核" }
-];
-
-const suppliers = [
-  { name: "广东区域售电商", region: "广东", business: "售电套餐" },
-  { name: "绿证服务机构", region: "北京", business: "绿证绿电" }
 ];
 
 const marketDemands = [
   {
     title: "广东电子制造企业年度购电需求",
-    business: "售电套餐",
+    business: "售电业务",
     region: "广东",
     volume: "月用电量 300 万度以上",
     note: "希望比较固定让利和月度竞价联动方案。",
@@ -393,7 +373,7 @@ const marketDemands = [
   },
   {
     title: "河北南网企业月度联动咨询",
-    business: "售电套餐",
+    business: "售电业务",
     region: "河北南网",
     volume: "月用电量 50-300 万度",
     note: "关注全网均价 + 0 元服务费和偏差考核承担方式。",
@@ -419,7 +399,7 @@ const marketDemands = [
 
 const serviceProviders = [
   {
-    name: "华能新能源综合能源服务团队",
+    name: "XX新能源综合能源服务团队",
     type: "平台运营",
     areas: ["北京", "河北南网", "蒙西", "广东"],
     tags: ["央企背景", "绿电资源", "方案顾问"],
@@ -469,6 +449,58 @@ const greenContact = {
   wechat: "xxx"
 };
 
+const regionalPriceReferences = {
+  beijing: {
+    green: "0.40 元/千瓦时",
+    greenPrice: 0.4,
+    conventional: "0.38 元/千瓦时",
+    conventionalPrice: 0.38,
+    marketProxy: "0.3845 元/千瓦时",
+    marketProxyPrice: 0.3845,
+    marketProxyNote: "2026 年 6 月国网北京市电力公司公布的代理购电价格；不含上网环节线损、输配电价、系统运行费及政府性基金附加。",
+    proxyAdder: 0
+  },
+  hebei_south: { green: "资源询价", conventional: "0.72 元/千瓦时起", marketProxy: "全网均价 + 0 元服务费", conventionalPrice: 0.72, proxyAdder: 0 },
+  mengxi: { green: "资源询价", conventional: "0.46 元/千瓦时起", marketProxy: "市场均价 + 服务费询价", conventionalPrice: 0.46, proxyAdder: 0 },
+  guangdong: { green: "资源询价", conventional: "0.78 元/千瓦时起", marketProxy: "月度均价 + 0.015 元/千瓦时", conventionalPrice: 0.78, proxyAdder: 0.015 },
+  yunnan: { green: "资源询价", conventional: "0.50 元/千瓦时起", marketProxy: "市场均价 + 0.01 元/千瓦时", conventionalPrice: 0.5, proxyAdder: 0.01 },
+  liaoning: { green: "资源询价", conventional: "0.63 元/千瓦时起", marketProxy: "月度均价 + 0.012 元/千瓦时", conventionalPrice: 0.63, proxyAdder: 0.012 },
+  shaanxi: { green: "资源询价", conventional: "0.58 元/千瓦时起", marketProxy: "市场均价 + 0.012 元/千瓦时", conventionalPrice: 0.58, proxyAdder: 0.012 }
+};
+
+const crossProvinceRecords = [
+  {
+    type: "已成交电能量价",
+    path: "安徽绿电经云霄直流外送",
+    price: "339.0 元/兆瓦时",
+    note: "2026 年 6 月首笔云霄直流输电权交易，成交绿电 534 万千瓦时。"
+  },
+  {
+    type: "通道输电价",
+    path: "云南送广东",
+    price: "75.5 元/兆瓦时",
+    note: "含线损，方案披露线损率为 6.57%。"
+  },
+  {
+    type: "通道输电价",
+    path: "贵州送广东",
+    price: "75.5 元/兆瓦时",
+    note: "含线损，方案披露线损率为 7.05%。"
+  },
+  {
+    type: "通道输电价",
+    path: "云南送广西",
+    price: "53.8 元/兆瓦时",
+    note: "含线损，方案披露线损率为 2.98%。"
+  },
+  {
+    type: "通道输电价",
+    path: "广西送广东",
+    price: "21.7 元/兆瓦时",
+    note: "含线损，适用于南方区域跨省点对点交易方案。"
+  }
+];
+
 function getRegionName(id) {
   if (id === "all") return "全国统一";
   return regions.find((region) => region.id === id)?.name || id;
@@ -516,21 +548,17 @@ function populateSelect(select, items, selectedId) {
 function planMatches(plan) {
   const regionMatch = plan.region === selectedRegion || plan.region === "all";
   const businessMatch = plan.business === selectedBusiness;
-  const scaleValue = document.getElementById("scaleSelect")?.value || "all";
-  const scaleMatch = scaleValue === "all" || plan.scale.includes(scaleValue);
-  return regionMatch && businessMatch && scaleMatch;
+  return regionMatch && businessMatch;
 }
 
 function tagClass(plan) {
   if (plan.business === "green") return "blue";
-  if (plan.business === "carbon") return "amber";
   return "";
 }
 
 function getPlanBadge(plan) {
   if (plan.business === "green") return "绿证";
   if (plan.business === "cross") return "撮合";
-  if (plan.business === "carbon") return "碳服务";
   if (plan.id === "hbn-month" || plan.id === "gd-bid" || plan.id === "yn-green") return "热门";
   if (plan.name.includes("绿电") || plan.tag.includes("绿电")) return "绿电";
   if (plan.mode.includes("年度") || plan.mode.includes("固定")) return "稳定";
@@ -541,7 +569,6 @@ function badgeClass(plan) {
   const badge = getPlanBadge(plan);
   if (badge === "热门") return "red";
   if (badge === "绿电" || badge === "绿证") return "green";
-  if (badge === "碳服务") return "amber";
   return "blue";
 }
 
@@ -556,7 +583,6 @@ function getServiceTerm(plan) {
 function getApplicableCustomers(plan) {
   if (plan.business === "green") return "出口型企业、园区、集团客户、需要 ESG 或供应链披露的企业";
   if (plan.business === "cross") return "集团客户、园区客户、大型工商业用户";
-  if (plan.business === "carbon") return "有碳盘查、履约、CCER 或低碳披露需求的企业";
   if (plan.scale.includes("large")) return "月用电量 300 万度以上或负荷波动较大的企业";
   if (plan.scale.includes("medium")) return "月用电量 50-300 万度的工商业企业";
   return "月用电量 10-50 万度、希望快速比价的工商业客户";
@@ -565,7 +591,6 @@ function getApplicableCustomers(plan) {
 function getRiskNotice(plan) {
   if (plan.business === "green") return "绿证资源、年份、项目类型和核销材料以实际库存及交易规则为准。";
   if (plan.business === "cross") return "跨省跨区交易需确认企业准入、交易路径和资源可得性，前端展示不构成成交承诺。";
-  if (plan.business === "carbon") return "碳服务结果需结合企业边界、行业规则和监管要求判断，不构成交易投资建议。";
   return "展示价格为意向报价，最终价格、偏差考核和结算方式以交易中心规则及正式合同为准。";
 }
 
@@ -576,7 +601,7 @@ function enhancePlanDetails(plan, details) {
     ["服务商信息", `${plan.supplier}，当前为平台展示口径，正式合作前需完成资质和服务范围确认。`],
     ["服务亮点", plan.features.join("；")],
     ["风险提示", getRiskNotice(plan)],
-    ["下一步对接", "提交需求后，由区域负责人或平台运营联系确认用电数据、合同周期和报价方案。"]
+    ["下一步对接", plan.business === "green" ? "提交买入或出售需求后，由绿证负责人确认资源类型、年份、数量及交付安排。" : "提交需求后，由区域负责人或平台运营联系确认用电数据、合同周期和报价方案。"]
   ];
 }
 
@@ -623,11 +648,12 @@ function getPlanDetails(plan) {
 
   if (plan.business === "green") {
     return enhancePlanDetails(plan, [
-      ["价格构成", `${plan.name}，全国统一意向价 ${plan.price || "询价后确认"}`],
-      ["服务费", "按采购数量和资源方交付要求确认"],
+      ["资源类型", plan.name],
+      ["资源数量", "以实时库存及资源方确认结果为准"],
+      ["交易方向", "支持企业采购绿证，也接受资源方出售计划登记"],
       ["交付口径", "按项目类型、年份、采购数量和资源库存确认"],
       ["服务期限", "按采购批次确认"],
-      ["增值服务", "绿证询价、资源匹配、材料整理、核销协助"]
+      ["增值服务", "资源匹配、材料整理、核销协助"]
     ]);
   }
 
@@ -638,16 +664,6 @@ function getPlanDetails(plan) {
       ["偏差考核", "按交易规则及双方合同约定执行"],
       ["服务期限", "按项目周期或交易周期确认"],
       ["增值服务", "资源撮合、交易路径咨询、绿电消纳建议"]
-    ]);
-  }
-
-  if (plan.business === "carbon") {
-    return enhancePlanDetails(plan, [
-      ["价格构成", "按碳盘查、碳资产咨询或履约服务范围报价"],
-      ["服务费", "按服务事项和交付材料确认"],
-      ["履约口径", "按企业行业、排放边界和监管要求确认"],
-      ["服务期限", "按项目周期确认"],
-      ["增值服务", "碳盘查、履约咨询、CCER线索梳理、低碳披露支持"]
     ]);
   }
 
@@ -663,9 +679,14 @@ function getPlanDetails(plan) {
 function renderPlans() {
   const grid = document.getElementById("planGrid");
   const visiblePlans = plans.filter(planMatches);
+  renderGreenBusinessPanel();
   renderContactCard();
+  renderRegionalPricePanel();
+  renderCrossProvincePanel();
+  renderPackageRecommendation();
 
-  grid.innerHTML = visiblePlans.length
+  grid.hidden = selectedBusiness === "green" || selectedBusiness === "cross";
+  grid.innerHTML = selectedBusiness === "green" || selectedBusiness === "cross" ? "" : visiblePlans.length
     ? visiblePlans
         .map(
           (plan) => `
@@ -678,10 +699,7 @@ function renderPlans() {
                 <span class="tag">${getPlanRegionLabel(plan)}</span>
               </div>
               <h3>${plan.name}</h3>
-              <div class="price-row">
-                <span>意向报价</span>
-                <strong>${plan.price || "询价后确认"}</strong>
-              </div>
+              ${plan.business === "green" ? "" : `<div class="price-row"><span>${plan.business === "retail" ? "代理购电价格" : "意向报价"}</span><strong>${plan.price || "询价后确认"}</strong></div>`}
               <p>${plan.desc}</p>
               <ul class="feature-list">
                 ${plan.features.map((feature) => `<li>${feature}</li>`).join("")}
@@ -690,24 +708,24 @@ function renderPlans() {
                 <span>${plan.mode} · ${plan.supplier}</span>
                 <div class="card-actions">
                   <button class="text-btn" type="button" data-plan-detail="${plan.id}">查看详情</button>
-                  <button class="text-btn" type="button" data-plan="${plan.name}">咨询</button>
+                  <button class="text-btn" type="button" data-plan="${plan.name}">${plan.business === "green" ? "登记需求" : "咨询"}</button>
                 </div>
               </div>
             </article>
           `
         )
         .join("")
-    : `<article class="plan-card"><h3>暂无匹配套餐</h3><p>当前筛选条件下没有套餐，可发布定制需求，由平台人工匹配服务商。</p><div class="card-foot"><span>定制需求</span><a class="text-btn" href="#demand">去发布</a></div></article>`;
+    : `<article class="plan-card"><h3>暂无匹配业务</h3><p>当前筛选条件下没有可展示业务，可联系小新助手提交定制需求，由平台人工匹配方案。</p><div class="card-foot"><span>定制需求</span><button class="text-btn" type="button" data-open-assistant>咨询小新助手</button></div></article>`;
 
   document.querySelectorAll("[data-plan]").forEach((button) => {
     button.addEventListener("click", () => {
-      const form = document.getElementById("demandForm");
-      form.querySelector('[name="business"]').value = selectedBusiness;
-      form.querySelector('[name="region"]').value = selectedBusiness === "green" ? regions[0].id : selectedRegion;
-      form.querySelector('[name="note"]').value = `我想咨询「${button.dataset.plan}」，请联系我提供报价方案。`;
-      document.getElementById("demand").scrollIntoView({ behavior: "smooth" });
-      showToast("已把套餐名称带入需求表单。");
+      openAssistantPanel();
+      showToast(`已打开小新助手，请留下「${button.dataset.plan}」需求。`);
     });
+  });
+
+  document.querySelectorAll("[data-open-assistant]").forEach((button) => {
+    button.addEventListener("click", openAssistantPanel);
   });
 
   document.querySelectorAll("[data-plan-detail]").forEach((button) => {
@@ -717,6 +735,294 @@ function renderPlans() {
   });
 
   document.getElementById("planCount").textContent = plans.length;
+}
+
+function renderGreenBusinessPanel() {
+  const panel = document.getElementById("greenBusinessPanel");
+  const greenBusiness = document.getElementById("green");
+  if (!panel.contains(greenBusiness)) panel.appendChild(greenBusiness);
+  greenBusiness.hidden = selectedBusiness !== "green";
+}
+
+function renderRegionalPricePanel() {
+  const panel = document.getElementById("regionalPricePanel");
+  if (selectedBusiness !== "retail") {
+    panel.innerHTML = "";
+    panel.hidden = true;
+    return;
+  }
+
+  const reference = regionalPriceReferences[selectedRegion];
+  panel.hidden = false;
+  panel.innerHTML = `
+    <div class="price-reference-heading">
+      <div>
+        <p class="eyebrow">${getRegionName(selectedRegion)}价格参考</p>
+        <h3>最近历史成交价格</h3>
+      </div>
+    </div>
+    <div class="price-reference-grid">
+      <article>
+        <span>绿电价格</span>
+        <strong>${reference.green}</strong>
+        <p>按绿电资源、交易周期和交付口径确认。</p>
+      </article>
+      <article>
+        <span>常规电能量价格</span>
+        <strong>${reference.conventional}</strong>
+        <p>展示当前区域已列业务的意向参考价。</p>
+      </article>
+      <article>
+        <span>电网代理购电价格</span>
+        <strong>${reference.marketProxy}</strong>
+        <p>${reference.marketProxyNote || "按市场均价与区域服务费口径计算。"}</p>
+      </article>
+    </div>
+  `;
+
+}
+
+function renderCrossProvincePanel() {
+  const panel = document.getElementById("crossProvincePanel");
+  if (selectedBusiness !== "cross") {
+    panel.innerHTML = "";
+    panel.hidden = true;
+    return;
+  }
+
+  panel.hidden = false;
+  panel.innerHTML = `
+    <div class="price-reference-heading">
+      <div>
+        <p class="eyebrow">${getRegionName(selectedRegion)}跨省跨区服务</p>
+        <h3>通道成本与 2026 年价格参考</h3>
+      </div>
+    </div>
+    <div class="cross-province-grid">
+      <article>
+        <span>输配电价计算器</span>
+        <strong>按合同参数测算</strong>
+        <p>输入受端电量、送端电能量价、输配电价和线损率，测算预估落地电能量成本。</p>
+        <button class="secondary-line-btn" type="button" id="openTransmissionCalculator">打开计算器</button>
+      </article>
+      <article class="cross-price-list">
+        <span>2026 年公开成交及通道价格参考</span>
+        <strong>跨省跨区价格数据</strong>
+        <div class="cross-record-list">
+          ${crossProvinceRecords
+            .map(
+              (record) => `
+                <div>
+                  <span>${record.type}</span>
+                  <b>${record.path}</b>
+                  <strong>${record.price}</strong>
+                  <small>${record.note}</small>
+                </div>
+              `
+            )
+            .join("")}
+        </div>
+        <small>已成交电能量价与通道输电价口径不同，测算时请分别填入对应字段，并以交易公告、通道规则和正式合同为准。</small>
+      </article>
+    </div>
+  `;
+
+  document.getElementById("openTransmissionCalculator").addEventListener("click", openTransmissionCalculatorModal);
+}
+
+function getPackagePlanPrice(plan, reference) {
+  if (plan.mode === "比例分成") return reference.conventionalPrice;
+
+  const priceText = plan.price || "";
+  const numericValues = [...priceText.matchAll(/\d+(?:\.\d+)?/g)].map((match) => Number(match[0]));
+  if (priceText.includes("市场均价") || priceText.includes("全网均价") || priceText.includes("月度均价")) {
+    return reference.conventionalPrice + (numericValues.at(-1) || 0);
+  }
+  return numericValues[0] || reference.conventionalPrice;
+}
+
+function getRecommendationFactors(tariffType) {
+  return tariffType === "two_part" ? { peak: 1.6, valley: 0.4 } : { peak: 1.8, valley: 0.3 };
+}
+
+function getRecommendationNumber(name) {
+  const input = document.querySelector(`#packageRecommendationForm [name="${name}"]`);
+  const value = Number(input?.value);
+  return Number.isFinite(value) && value >= 0 ? value : 0;
+}
+
+function renderPackageRecommendation() {
+  const panel = document.getElementById("packageRecommendation");
+  if (selectedBusiness !== "retail") {
+    panel.hidden = true;
+    panel.innerHTML = "";
+    return;
+  }
+
+  const regionalPlans = plans.filter((plan) => plan.business === "retail" && plan.region === selectedRegion);
+  const defaultIds = regionalPlans.slice(0, 3).map((plan) => plan.id);
+  const options = regionalPlans.map((plan) => `<option value="${plan.id}">${plan.name}</option>`).join("");
+  panel.hidden = false;
+  panel.innerHTML = `
+    <div class="package-recommendation-heading">
+      <div>
+        <p class="eyebrow">${getRegionName(selectedRegion)}售电业务</p>
+        <h3>套餐推荐</h3>
+      </div>
+      <p>输入用电结构与绿电比例，比较三种套餐和电网代理购电的电能量费用。</p>
+    </div>
+    <form class="recommendation-form" id="packageRecommendationForm">
+      <label>
+        电价类型
+        <select name="tariffType">
+          <option value="single">单一制</option>
+          <option value="two_part">两部制</option>
+        </select>
+      </label>
+      <label>
+        总用电量（千瓦时）
+        <input name="totalKwh" type="number" min="0" step="1" value="100000" />
+      </label>
+      <label>
+        峰段电量（千瓦时）
+        <input name="peakKwh" type="number" min="0" step="1" value="30000" />
+      </label>
+      <label>
+        平段电量（千瓦时）
+        <input name="flatKwh" type="number" min="0" step="1" value="50000" />
+      </label>
+      <label>
+        谷段电量（千瓦时）
+        <input name="valleyKwh" type="number" min="0" step="1" value="20000" />
+      </label>
+      <label>
+        绿电比例（%）
+        <input name="greenRatio" type="number" min="0" max="100" step="1" value="0" />
+      </label>
+      <div class="recommendation-plan-selects wide">
+        <span>套餐选择</span>
+        <div>
+          <label>方案一<select name="planOne">${options}</select></label>
+          <label>方案二<select name="planTwo">${options}</select></label>
+          <label>方案三<select name="planThree">${options}</select></label>
+        </div>
+      </div>
+    </form>
+    <div class="recommendation-results" id="packageRecommendationResults" aria-live="polite"></div>
+    <p class="recommendation-note" id="packageRecommendationNote"></p>
+  `;
+
+  ["planOne", "planTwo", "planThree"].forEach((name, index) => {
+    const select = panel.querySelector(`[name="${name}"]`);
+    select.value = defaultIds[index] || defaultIds[0] || "";
+  });
+  panel.querySelector("form").addEventListener("input", updatePackageRecommendation);
+  panel.querySelector("form").addEventListener("change", updatePackageRecommendation);
+  updatePackageRecommendation();
+}
+
+function updatePackageRecommendation() {
+  const results = document.getElementById("packageRecommendationResults");
+  if (!results) return;
+
+  const reference = regionalPriceReferences[selectedRegion];
+  const tariffType = document.querySelector('#packageRecommendationForm [name="tariffType"]').value;
+  const totalKwh = getRecommendationNumber("totalKwh");
+  const peakKwh = getRecommendationNumber("peakKwh");
+  const flatKwh = getRecommendationNumber("flatKwh");
+  const valleyKwh = getRecommendationNumber("valleyKwh");
+  const periodKwh = peakKwh + flatKwh + valleyKwh;
+  const greenRatio = Math.min(getRecommendationNumber("greenRatio"), 100) / 100;
+  const factors = getRecommendationFactors(tariffType);
+  const weightedKwh = peakKwh * factors.peak + flatKwh + valleyKwh * factors.valley;
+  const greenPrice = reference.greenPrice || reference.conventionalPrice;
+  const selectedPlans = ["planOne", "planTwo", "planThree"]
+    .map((name) => plans.find((plan) => plan.id === document.querySelector(`#packageRecommendationForm [name="${name}"]`).value))
+    .filter(Boolean);
+
+  const planResults = selectedPlans.map((plan, index) => {
+    const conventionalPrice = getPackagePlanPrice(plan, reference);
+    const blendedPrice = conventionalPrice * (1 - greenRatio) + greenPrice * greenRatio;
+    return {
+      label: `方案${index + 1}`,
+      title: plan.name,
+      price: blendedPrice,
+      cost: blendedPrice * weightedKwh,
+      note: `绿电比例 ${Math.round(greenRatio * 100)}%，按峰平谷电量折算。`
+    };
+  });
+
+  const gridPrice = reference.marketProxyPrice || reference.conventionalPrice + reference.proxyAdder;
+  const gridResult = {
+    label: "对照项",
+    title: "电网代理购电",
+    price: gridPrice,
+    cost: gridPrice * weightedKwh,
+    note: reference.marketProxyNote || "按当前区域电网代理购电参考价格测算。"
+  };
+
+  results.innerHTML = [...planResults, gridResult]
+    .map(
+      (item) => `
+        <article>
+          <span>${item.label}</span>
+          <h3>${item.title}</h3>
+          <dl>
+            <div><dt>折算平段价</dt><dd>${item.price.toFixed(4)} 元/千瓦时</dd></div>
+            <div><dt>预估电能量费用</dt><dd>${formatAmount(item.cost)} 元</dd></div>
+          </dl>
+          <p>${item.note}</p>
+        </article>
+      `
+    )
+    .join("");
+
+  const note = document.getElementById("packageRecommendationNote");
+  const difference = totalKwh - periodKwh;
+  const totalCheck = Math.abs(difference) < 1 ? "总用电量与峰平谷电量合计一致。" : `当前峰平谷合计为 ${formatAmount(periodKwh)} 千瓦时，与总用电量相差 ${formatAmount(Math.abs(difference))} 千瓦时。`;
+  const tariffNote = tariffType === "two_part" ? "两部制仅测算电能量费用，未计入基本电费。" : "单一制按电能量费用测算。";
+  note.textContent = `${totalCheck}${tariffNote} 输配电价、系统运行费及政府性基金等电网费用未纳入。`;
+}
+
+function getTransmissionNumber(name) {
+  const input = document.querySelector(`#transmissionCalculatorForm [name="${name}"]`);
+  if (!input || input.value.trim() === "") return null;
+  const value = Number(input.value);
+  return Number.isFinite(value) && value >= 0 ? value : null;
+}
+
+function updateTransmissionCalculator() {
+  const deliveredKwh = getTransmissionNumber("deliveredKwh") || 0;
+  const sourceEnergyPrice = getTransmissionNumber("sourceEnergyPrice");
+  const transmissionPrice = getTransmissionNumber("transmissionPrice");
+  const lossRate = Math.min(getTransmissionNumber("lossRate") || 0, 99) / 100;
+  const sourceKwh = lossRate < 1 ? deliveredKwh / (1 - lossRate) : 0;
+  const lossKwh = Math.max(sourceKwh - deliveredKwh, 0);
+  const energyFee = sourceEnergyPrice === null ? null : sourceKwh * sourceEnergyPrice;
+  const transmissionFee = transmissionPrice === null ? null : deliveredKwh * transmissionPrice;
+  const totalCost = energyFee === null || transmissionFee === null ? null : energyFee + transmissionFee;
+  const landedPrice = totalCost === null || deliveredKwh === 0 ? null : totalCost / deliveredKwh;
+
+  document.getElementById("transmissionSourceKwh").textContent = `${formatAmount(sourceKwh)} 千瓦时`;
+  document.getElementById("transmissionLossKwh").textContent = `${formatAmount(lossKwh)} 千瓦时`;
+  document.getElementById("transmissionEnergyFee").textContent = energyFee === null ? "待输入成交价格" : `${formatAmount(energyFee)} 元`;
+  document.getElementById("transmissionFee").textContent = transmissionFee === null ? "待输入输配电价" : `${formatAmount(transmissionFee)} 元`;
+  document.getElementById("transmissionTotalCost").textContent = totalCost === null ? "待补充价格参数" : `${formatAmount(totalCost)} 元`;
+  document.getElementById("transmissionLandedPrice").textContent = landedPrice === null ? "请填写送端电能量价格和输配电价" : `预估落地电能量单价 ${landedPrice.toFixed(3)} 元/千瓦时`;
+}
+
+function openTransmissionCalculatorModal() {
+  const modal = document.getElementById("transmissionCalculatorModal");
+  document.getElementById("transmissionCalculatorEyebrow").textContent = `${getRegionName(selectedRegion)}跨省跨区服务`;
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  updateTransmissionCalculator();
+}
+
+function closeTransmissionCalculatorModal() {
+  const modal = document.getElementById("transmissionCalculatorModal");
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
 }
 
 function openPlanModal(planId) {
@@ -749,75 +1055,11 @@ function closePlanModal() {
   modal.setAttribute("aria-hidden", "true");
 }
 
-function getBeijingTouCoefficients(tariffType) {
-  const coefficients = {
-    below_1kv: { sharp: 2.052, peak: 1.71, flat: 1, valley: 0.36 },
-    above_1kv: { sharp: 2.16, peak: 1.8, flat: 1, valley: 0.3 },
-    two_part: { sharp: 1.92, peak: 1.6, flat: 1, valley: 0.4 }
-  };
-  return coefficients[tariffType] || coefficients.above_1kv;
-}
-
 function formatAmount(value) {
   return new Intl.NumberFormat("zh-CN", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   }).format(Number.isFinite(value) ? value : 0);
-}
-
-function getNumberInputValue(name) {
-  const value = Number(document.querySelector(`#greenSettlementForm [name="${name}"]`).value);
-  return Number.isFinite(value) && value >= 0 ? value : 0;
-}
-
-function updateGreenSettlement() {
-  const tariffType = document.querySelector('#greenSettlementForm [name="tariffType"]').value;
-  const packageType = document.querySelector('#greenSettlementForm [name="packageType"]').value;
-  const marketAverage = getNumberInputValue("marketAverage");
-  const currentTotal = getNumberInputValue("currentTotal");
-  const currentMarketFee = getNumberInputValue("currentMarketFee");
-  const sharp = getNumberInputValue("sharpKwh");
-  const peak = getNumberInputValue("peakKwh");
-  const flat = getNumberInputValue("flatKwh");
-  const valley = getNumberInputValue("valleyKwh");
-  const greenRatio = Math.min(getNumberInputValue("greenRatio"), 100) / 100;
-  const greenRewardRate = getNumberInputValue("greenRewardRate");
-  const coefficients = getBeijingTouCoefficients(tariffType);
-  const marketizedKwh = sharp + peak + flat + valley;
-  const weightedKwh = sharp * coefficients.sharp + peak * coefficients.peak + flat + valley * coefficients.valley;
-  const retailPrice = packageType === "fixed" ? 0.4 : marketAverage + 0.05;
-  const packageEnergyFee = retailPrice * weightedKwh;
-  const retainedCharges = Math.max(currentTotal - currentMarketFee, 0);
-  const greenKwh = marketizedKwh * greenRatio;
-  const greenReward = greenKwh * greenRewardRate;
-  const estimatedBill = retainedCharges + packageEnergyFee - greenReward;
-  const savings = currentTotal - estimatedBill;
-  const currentEquivalentPrice = weightedKwh ? currentMarketFee / weightedKwh : 0;
-
-  document.getElementById("settlementPackagePrice").textContent = `${retailPrice.toFixed(3)} 元/千瓦时`;
-  document.getElementById("settlementWeightedKwh").textContent = `${formatAmount(weightedKwh)} 千瓦时`;
-  document.getElementById("settlementCurrentPrice").textContent = `${currentEquivalentPrice.toFixed(3)} 元/千瓦时`;
-  document.getElementById("settlementRetainedCharges").textContent = `${formatAmount(retainedCharges)} 元`;
-  document.getElementById("settlementEnergyFee").textContent = `${formatAmount(packageEnergyFee)} 元`;
-  document.getElementById("settlementReward").textContent = `-${formatAmount(greenReward)} 元`;
-  document.getElementById("settlementBill").textContent = `${formatAmount(estimatedBill)} 元`;
-  const savingsElement = document.getElementById("settlementSavings");
-  savingsElement.textContent = `${savings >= 0 ? "预计节省" : "预计增加"} ${formatAmount(Math.abs(savings))} 元`;
-  savingsElement.classList.toggle("is-negative", savings < 0);
-  document.getElementById("marketAverageField").hidden = packageType === "fixed";
-}
-
-function openGreenSettlementModal() {
-  const modal = document.getElementById("greenSettlementModal");
-  modal.classList.add("is-open");
-  modal.setAttribute("aria-hidden", "false");
-  updateGreenSettlement();
-}
-
-function closeGreenSettlementModal() {
-  const modal = document.getElementById("greenSettlementModal");
-  modal.classList.remove("is-open");
-  modal.setAttribute("aria-hidden", "true");
 }
 
 function renderContactCard() {
@@ -845,10 +1087,7 @@ function renderContactCard() {
         <dd>${contact.wechat}</dd>
       </div>
     </dl>
-    ${selectedBusiness === "retail" && selectedRegion === "beijing" ? '<button class="text-btn settlement-link" type="button" id="openGreenSettlement">北京绿电结算测算</button>' : ""}
   `;
-
-  document.getElementById("openGreenSettlement")?.addEventListener("click", openGreenSettlementModal);
 }
 
 function renderMarketDemands() {
@@ -892,7 +1131,6 @@ function renderServiceProviders() {
           <p>${provider.type} · 服务客户 ${provider.customers} · 评分 ${provider.rating}</p>
           <div class="provider-areas">${provider.areas.map((area) => `<span>${area}</span>`).join("")}</div>
           <div class="provider-tags">${provider.tags.map((tag) => `<span>${tag}</span>`).join("")}</div>
-          <a class="text-btn" href="#supplier">申请合作</a>
         </article>
       `
     )
@@ -972,7 +1210,6 @@ function renderLeads() {
     })
     .join("");
   document.getElementById("demandCount").textContent = leads.length;
-  document.getElementById("supplierCount").textContent = suppliers.length;
 }
 
 function showToast(message) {
@@ -981,6 +1218,55 @@ function showToast(message) {
   toast.classList.add("is-visible");
   window.clearTimeout(showToast.timer);
   showToast.timer = window.setTimeout(() => toast.classList.remove("is-visible"), 2600);
+}
+
+function initializeAssistantIcons() {
+  window.lucide?.createIcons();
+}
+
+function openAssistantPanel() {
+  const launcher = document.getElementById("assistantLauncher");
+  if (launcher?.getAttribute("aria-expanded") !== "true") launcher.click();
+}
+
+function getOperatorAccess() {
+  try {
+    return window.sessionStorage.getItem(OPERATOR_ACCESS_KEY) === "granted";
+  } catch {
+    return false;
+  }
+}
+
+function setOperatorAccess(granted, shouldScroll = false) {
+  const operatorArea = document.getElementById("operatorArea");
+  operatorArea.hidden = !granted;
+
+  try {
+    if (granted) {
+      window.sessionStorage.setItem(OPERATOR_ACCESS_KEY, "granted");
+    } else {
+      window.sessionStorage.removeItem(OPERATOR_ACCESS_KEY);
+    }
+  } catch {
+    // Private browsing may prevent session storage; visibility still works for this page.
+  }
+
+  if (granted && shouldScroll) operatorArea.scrollIntoView({ behavior: "smooth" });
+}
+
+function openBackendAccessModal() {
+  const modal = document.getElementById("backendAccessModal");
+  const error = document.getElementById("backendAccessError");
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  error.hidden = true;
+  window.setTimeout(() => modal.querySelector('[name="accessCode"]').focus(), 0);
+}
+
+function closeBackendAccessModal() {
+  const modal = document.getElementById("backendAccessModal");
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
 }
 
 function setupEvents() {
@@ -996,40 +1282,142 @@ function setupEvents() {
     renderPlans();
   });
 
-  document.getElementById("scaleSelect").addEventListener("change", renderPlans);
-
   document.querySelectorAll("[data-modal-close]").forEach((button) => {
     button.addEventListener("click", closePlanModal);
   });
 
-  document.querySelectorAll("[data-green-settlement-close]").forEach((button) => {
-    button.addEventListener("click", closeGreenSettlementModal);
+  document.querySelectorAll("[data-transmission-close]").forEach((button) => {
+    button.addEventListener("click", closeTransmissionCalculatorModal);
   });
 
-  document.getElementById("greenSettlementForm").addEventListener("input", updateGreenSettlement);
-  document.getElementById("greenSettlementForm").addEventListener("change", updateGreenSettlement);
+  document.querySelectorAll("[data-backend-access-close]").forEach((button) => {
+    button.addEventListener("click", closeBackendAccessModal);
+  });
+
+  document.getElementById("openBackendAccess").addEventListener("click", openBackendAccessModal);
+  document.getElementById("closeBackend").addEventListener("click", () => {
+    setOperatorAccess(false);
+    document.getElementById("plans").scrollIntoView({ behavior: "smooth" });
+    showToast("已退出运营后台。");
+  });
+
+  document.getElementById("backendAccessForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const accessCode = new FormData(event.currentTarget).get("accessCode");
+    const error = document.getElementById("backendAccessError");
+
+    if (accessCode !== OPERATOR_ACCESS_CODE) {
+      error.hidden = false;
+      event.currentTarget.querySelector('[name="accessCode"]').focus();
+      return;
+    }
+
+    event.currentTarget.reset();
+    closeBackendAccessModal();
+    setOperatorAccess(true, true);
+    showToast("已进入运营后台。");
+  });
+
+  document.getElementById("openAssistantFromHero").addEventListener("click", openAssistantPanel);
+
+  document.getElementById("transmissionCalculatorForm").addEventListener("input", updateTransmissionCalculator);
+
+  document.getElementById("greenContactShortcut").addEventListener("click", () => {
+    selectedBusiness = "green";
+    syncControls();
+    populateFormSelects();
+    renderPlans();
+    document.getElementById("plans").scrollIntoView({ behavior: "smooth" });
+    showToast("已切换至绿证绿电业务，可查看绿证负责人联系方式。");
+  });
+
+  document.getElementById("greenDemandForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = Object.fromEntries(new FormData(event.currentTarget).entries());
+    leads.unshift({
+      company: data.company,
+      region: "全国统一",
+      business: `${data.tradeSide}绿证需求`,
+      volume: data.quantity ? `${data.quantity} 张` : "待沟通",
+      status: "待审核"
+    });
+    renderLeads();
+    event.currentTarget.reset();
+    showToast("绿证买卖需求已提交，绿证负责人将联系您确认资源与交付安排。");
+  });
+
+  const assistantPanel = document.getElementById("assistantPanel");
+  const assistantLauncher = document.getElementById("assistantLauncher");
+  const assistantOptions = document.getElementById("assistantOptions");
+  const assistantForm = document.getElementById("assistantLeadForm");
+  const assistantSelection = document.getElementById("assistantSelection");
+  let assistantBusiness = "retail";
+  let assistantDemand = "";
+
+  const closeAssistant = () => {
+    assistantPanel.hidden = true;
+    assistantLauncher.setAttribute("aria-expanded", "false");
+  };
+
+  const resetAssistant = () => {
+    assistantForm.reset();
+    assistantForm.hidden = true;
+    assistantOptions.hidden = false;
+    assistantDemand = "";
+  };
+
+  assistantLauncher.addEventListener("click", () => {
+    const willOpen = assistantPanel.hidden;
+    assistantPanel.hidden = !willOpen;
+    assistantLauncher.setAttribute("aria-expanded", String(willOpen));
+    if (willOpen) assistantPanel.querySelector("[data-assistant-demand]").focus();
+  });
+
+  document.getElementById("assistantClose").addEventListener("click", closeAssistant);
+  document.getElementById("assistantReset").addEventListener("click", resetAssistant);
+
+  assistantOptions.querySelectorAll("[data-assistant-demand]").forEach((button) => {
+    button.addEventListener("click", () => {
+      assistantBusiness = button.dataset.assistantBusiness;
+      assistantDemand = button.dataset.assistantDemand;
+      assistantSelection.textContent = `已选择：${assistantDemand}`;
+      assistantOptions.hidden = true;
+      assistantForm.hidden = false;
+      assistantForm.querySelector('[name="company"]').focus();
+    });
+  });
+
+  assistantForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = Object.fromEntries(new FormData(assistantForm).entries());
+    leads.unshift({
+      company: data.company,
+      region: assistantBusiness === "green" ? "全国统一" : getRegionName(selectedRegion),
+      business: assistantDemand,
+      volume: data.volume || "待沟通",
+      status: "待审核"
+    });
+    renderLeads();
+    resetAssistant();
+    closeAssistant();
+    showToast("需求已提交，平台工作人员将尽快与您联系。");
+  });
 
   document.getElementById("modalConsultBtn").addEventListener("click", () => {
     const plan = plans.find((item) => item.id === activePlanId);
     if (!plan) return;
 
-    selectedBusiness = plan.business;
-    if (plan.region !== "all") selectedRegion = plan.region;
-    populateFormSelects();
-
-    const form = document.getElementById("demandForm");
-    form.querySelector('[name="business"]').value = plan.business;
-    form.querySelector('[name="region"]').value = plan.business === "green" ? regions[0].id : selectedRegion;
-    form.querySelector('[name="note"]').value = `我想咨询「${plan.name}」，请联系我提供报价方案。`;
     closePlanModal();
-    document.getElementById("demand").scrollIntoView({ behavior: "smooth" });
-    showToast("已把套餐名称带入需求表单。");
+    openAssistantPanel();
+    showToast(`已打开小新助手，请留下「${plan.name}」需求。`);
   });
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       closePlanModal();
-      closeGreenSettlementModal();
+      closeTransmissionCalculatorModal();
+      closeBackendAccessModal();
+      closeAssistant();
     }
   });
 
@@ -1075,25 +1463,13 @@ function setupEvents() {
     document.getElementById("console").scrollIntoView({ behavior: "smooth" });
   });
 
-  document.getElementById("supplierForm").addEventListener("submit", (event) => {
-    event.preventDefault();
-    const data = Object.fromEntries(new FormData(event.currentTarget).entries());
-    suppliers.unshift({
-      name: data.supplier,
-      region: data.business === "green" ? "全国统一" : getRegionName(data.region),
-      business: getBusinessName(data.business)
-    });
-    renderLeads();
-    event.currentTarget.reset();
-    populateFormSelects();
-    showToast("商家入驻信息已模拟提交，后台待审核数量已更新。");
-  });
 }
 
 function init() {
   syncControls();
   populateFormSelects();
   setupEvents();
+  setOperatorAccess(getOperatorAccess());
   renderPlans();
   renderMarketDemands();
   renderServiceProviders();
@@ -1101,3 +1477,4 @@ function init() {
 }
 
 init();
+window.addEventListener("DOMContentLoaded", initializeAssistantIcons);
